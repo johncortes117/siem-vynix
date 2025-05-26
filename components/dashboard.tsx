@@ -178,7 +178,7 @@ const RiskLevelBadge = ({ level }: { level: string }) => {
   }
 
   return (
-    <Badge variant="outline" className={`${variants[level as keyof typeof variants]} font-medium`}>
+    <Badge variant="outline" className={`${variants[level as keyof typeof variants]} font-medium text-xs`}>
       {level.charAt(0).toUpperCase() + level.slice(1)}
     </Badge>
   )
@@ -193,7 +193,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   }
 
   return (
-    <Badge variant="outline" className={`${variants[status as keyof typeof variants]} font-medium`}>
+    <Badge variant="outline" className={`${variants[status as keyof typeof variants]} font-medium text-xs`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </Badge>
   )
@@ -224,13 +224,13 @@ const MetricCard = ({
   return (
     <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-slate-400">{title}</CardTitle>
+        <CardTitle className="text-xs sm:text-sm font-medium text-slate-400">{title}</CardTitle>
         <Icon className="h-4 w-4 text-slate-400" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-lg sm:text-2xl font-bold">{value}</div>
         {change && <p className={`text-xs ${changeColor[changeType]}`}>{change}</p>}
-        {description && <p className="text-xs text-slate-500 mt-1">{description}</p>}
+        {description && <p className="text-xs text-slate-500 mt-1 hidden sm:block">{description}</p>}
       </CardContent>
     </Card>
   )
@@ -262,7 +262,7 @@ export default function Dashboard() {
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex h-screen bg-slate-950 text-slate-50">
         <Sidebar className="border-r border-slate-800">
           <SidebarHeader className="border-b border-slate-800 px-4 py-6">
@@ -316,36 +316,36 @@ export default function Dashboard() {
 
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Header */}
-          <header className="flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/50 px-6 backdrop-blur-sm">
+          <header className="flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/50 px-4 sm:px-6 backdrop-blur-sm">
             <SidebarTrigger className="text-slate-400 hover:text-slate-50" />
             <div className="relative flex-1 max-w-xs sm:max-w-md">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
               <Input
                 type="search"
-                placeholder="Search events, alerts, users..."
-                className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500"
+                placeholder="Search events..."
+                className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
               />
             </div>
-            <div className="ml-auto flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-2 sm:gap-4">
               <Button
                 variant="outline"
                 size="sm"
                 className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 hidden sm:flex"
               >
                 <Calendar className="h-4 w-4" />
-                <span>May 19, 2025</span>
+                <span className="hidden md:inline">May 19, 2025</span>
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50"
+                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
               >
                 <Bell className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50"
+                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
               >
                 <Settings className="h-4 w-4" />
               </Button>
@@ -353,12 +353,12 @@ export default function Dashboard() {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 overflow-auto p-6">
-            <div className="mx-auto max-w-7xl space-y-6">
+          <main className="flex-1 overflow-auto p-4 sm:p-6">
+            <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
               {/* Page header */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold">Security Dashboard</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold">Security Dashboard</h1>
                   <p className="text-sm text-slate-400">Real-time security monitoring and event analysis</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -372,13 +372,14 @@ export default function Dashboard() {
                   </Button>
                   <Button size="sm" className="gap-2 bg-cyan-600 hover:bg-cyan-700">
                     <Terminal className="h-4 w-4" />
-                    <span>Run Analysis</span>
+                    <span className="hidden sm:inline">Run Analysis</span>
+                    <span className="sm:hidden">Run</span>
                   </Button>
                 </div>
               </div>
 
               {/* Metrics */}
-              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
                 <MetricCard
                   icon={AlertTriangle}
                   title="Critical Alerts"
@@ -414,20 +415,24 @@ export default function Dashboard() {
               </div>
 
               {/* Charts and data */}
-              <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle>Security Events Timeline</CardTitle>
-                    <CardDescription className="text-slate-400">Last 24 hours of security events</CardDescription>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm sm:text-base">Security Events Timeline</CardTitle>
+                    <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                      Last 24 hours of security events
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <TimelineChart />
                   </CardContent>
                 </Card>
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle>Risk Distribution</CardTitle>
-                    <CardDescription className="text-slate-400">Events by risk level</CardDescription>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm sm:text-base">Risk Distribution</CardTitle>
+                    <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                      Events by risk level
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <RiskDistributionChart />
@@ -435,60 +440,62 @@ export default function Dashboard() {
                 </Card>
               </div>
 
-              <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm lg:col-span-2">
-                  <CardHeader>
-                    <CardTitle>Network Activity Map</CardTitle>
-                    <CardDescription className="text-slate-400">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm sm:text-base">Network Activity Map</CardTitle>
+                    <CardDescription className="text-slate-400 text-xs sm:text-sm">
                       Geographic distribution of security events
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="h-[300px]">
+                  <CardContent>
                     <NetworkActivityMap />
                   </CardContent>
                 </Card>
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle>Event Types</CardTitle>
-                    <CardDescription className="text-slate-400">Distribution by category</CardDescription>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm sm:text-base">Event Types</CardTitle>
+                    <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                      Distribution by category
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <EventsChart />
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-4 space-y-2 sm:space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full bg-cyan-500" />
-                          <span className="text-sm">Authentication</span>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-cyan-500" />
+                          <span className="text-xs sm:text-sm">Authentication</span>
                         </div>
-                        <span className="text-sm font-medium">32%</span>
+                        <span className="text-xs sm:text-sm font-medium">32%</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full bg-purple-500" />
-                          <span className="text-sm">Network</span>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-purple-500" />
+                          <span className="text-xs sm:text-sm">Network</span>
                         </div>
-                        <span className="text-sm font-medium">28%</span>
+                        <span className="text-xs sm:text-sm font-medium">28%</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full bg-amber-500" />
-                          <span className="text-sm">Malware</span>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-amber-500" />
+                          <span className="text-xs sm:text-sm">Malware</span>
                         </div>
-                        <span className="text-sm font-medium">18%</span>
+                        <span className="text-xs sm:text-sm font-medium">18%</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full bg-red-500" />
-                          <span className="text-sm">Data</span>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-red-500" />
+                          <span className="text-xs sm:text-sm">Data</span>
                         </div>
-                        <span className="text-sm font-medium">12%</span>
+                        <span className="text-xs sm:text-sm font-medium">12%</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full bg-green-500" />
-                          <span className="text-sm">System</span>
+                          <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-green-500" />
+                          <span className="text-xs sm:text-sm">System</span>
                         </div>
-                        <span className="text-sm font-medium">10%</span>
+                        <span className="text-xs sm:text-sm font-medium">10%</span>
                       </div>
                     </div>
                   </CardContent>
@@ -498,10 +505,10 @@ export default function Dashboard() {
               {/* Security events table */}
               <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <CardTitle>Security Events</CardTitle>
-                      <CardDescription className="text-slate-400">
+                      <CardTitle className="text-sm sm:text-base">Security Events</CardTitle>
+                      <CardDescription className="text-slate-400 text-xs sm:text-sm">
                         Recent security events detected in your environment
                       </CardDescription>
                       <div className="mt-2 text-xs text-slate-400">
@@ -514,47 +521,47 @@ export default function Dashboard() {
                         <TabsTrigger
                           value="all"
                           onClick={() => setSelectedRiskFilter("all")}
-                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-cyan-500"
+                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-cyan-500 text-xs"
                         >
                           All ({eventCounts.total})
                         </TabsTrigger>
                         <TabsTrigger
                           value="high"
                           onClick={() => setSelectedRiskFilter("high")}
-                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-red-500"
+                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-red-500 text-xs"
                         >
                           High ({eventCounts.high})
                         </TabsTrigger>
                         <TabsTrigger
                           value="medium"
                           onClick={() => setSelectedRiskFilter("medium")}
-                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-amber-500"
+                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-amber-500 text-xs"
                         >
-                          Medium ({eventCounts.medium})
+                          Med ({eventCounts.medium})
                         </TabsTrigger>
                         <TabsTrigger
                           value="low"
                           onClick={() => setSelectedRiskFilter("low")}
-                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-green-500"
+                          className="data-[state=active]:bg-slate-800 data-[state=active]:text-green-500 text-xs"
                         >
                           Low ({eventCounts.low})
                         </TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </div>
-                  <div className="mt-3 flex items-center gap-3">
+                  <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <div className="relative flex-1">
                       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
                       <Input
                         type="search"
-                        placeholder="Search events by ID, description, source..."
-                        className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500"
+                        placeholder="Search events..."
+                        className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
                     </div>
                     <Select defaultValue="newest">
-                      <SelectTrigger className="w-[180px] bg-slate-900 border-slate-800">
+                      <SelectTrigger className="w-full sm:w-[180px] bg-slate-900 border-slate-800">
                         <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-900 border-slate-800">
@@ -567,20 +574,20 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <ScrollArea className="h-[400px]">
+                  <ScrollArea className="h-[300px] sm:h-[400px]">
                     <div className="overflow-x-auto">
-                      <Table className="min-w-[800px]">
+                      <Table className="min-w-[700px]">
                         <TableHeader className="bg-slate-900/50">
                           <TableRow className="hover:bg-slate-900/80 border-slate-800">
-                            <TableHead className="w-[100px]">Event ID</TableHead>
-                            <TableHead className="w-[180px]">Timestamp</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Source</TableHead>
-                            <TableHead>Destination</TableHead>
-                            <TableHead>Risk Level</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="w-[80px] text-xs">Event ID</TableHead>
+                            <TableHead className="w-[120px] text-xs">Timestamp</TableHead>
+                            <TableHead className="text-xs">Description</TableHead>
+                            <TableHead className="text-xs">Type</TableHead>
+                            <TableHead className="text-xs">Source</TableHead>
+                            <TableHead className="text-xs">Destination</TableHead>
+                            <TableHead className="text-xs">Risk Level</TableHead>
+                            <TableHead className="text-xs">Status</TableHead>
+                            <TableHead className="text-right text-xs">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -595,8 +602,8 @@ export default function Dashboard() {
                                   </span>
                                 </div>
                               </TableCell>
-                              <TableCell>{event.description}</TableCell>
-                              <TableCell>{event.type}</TableCell>
+                              <TableCell className="text-xs">{event.description}</TableCell>
+                              <TableCell className="text-xs">{event.type}</TableCell>
                               <TableCell className="font-mono text-xs">{event.source}</TableCell>
                               <TableCell className="font-mono text-xs">{event.destination}</TableCell>
                               <TableCell>
@@ -608,8 +615,8 @@ export default function Dashboard() {
                               <TableCell className="text-right">
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                      <MoreHorizontal className="h-4 w-4" />
+                                    <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-8 sm:w-8">
+                                      <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
                                       <span className="sr-only">Open menu</span>
                                     </Button>
                                   </DropdownMenuTrigger>
