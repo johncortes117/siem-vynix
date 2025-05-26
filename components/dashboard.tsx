@@ -268,7 +268,7 @@ export default function Dashboard() {
           <SidebarHeader className="border-b border-slate-800 px-4 py-6">
             <div className="flex items-center gap-2">
               <ShieldAlert className="h-6 w-6 text-cyan-500" />
-              <h1 className="text-xl font-bold">SecureGuard</h1>
+              <h1 className="text-xl font-bold">Vynix</h1>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -318,7 +318,7 @@ export default function Dashboard() {
           {/* Header */}
           <header className="flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/50 px-6 backdrop-blur-sm">
             <SidebarTrigger className="text-slate-400 hover:text-slate-50" />
-            <div className="relative flex-1 max-w-md">
+            <div className="relative flex-1 max-w-xs sm:max-w-md">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
               <Input
                 type="search"
@@ -330,7 +330,7 @@ export default function Dashboard() {
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50"
+                className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 hidden sm:flex"
               >
                 <Calendar className="h-4 w-4" />
                 <span>May 19, 2025</span>
@@ -378,7 +378,7 @@ export default function Dashboard() {
               </div>
 
               {/* Metrics */}
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 <MetricCard
                   icon={AlertTriangle}
                   title="Critical Alerts"
@@ -414,7 +414,7 @@ export default function Dashboard() {
               </div>
 
               {/* Charts and data */}
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle>Security Events Timeline</CardTitle>
@@ -435,7 +435,7 @@ export default function Dashboard() {
                 </Card>
               </div>
 
-              <div className="grid gap-6 lg:grid-cols-3">
+              <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
                 <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm lg:col-span-2">
                   <CardHeader>
                     <CardTitle>Network Activity Map</CardTitle>
@@ -509,7 +509,7 @@ export default function Dashboard() {
                         <span className="font-medium text-red-500 ml-2">+18%</span> increase from previous day
                       </div>
                     </div>
-                    <Tabs defaultValue="all" className="w-[400px]">
+                    <Tabs defaultValue="all" className="w-full sm:w-[400px]">
                       <TabsList className="grid w-full grid-cols-4 bg-slate-900">
                         <TabsTrigger
                           value="all"
@@ -568,60 +568,64 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[400px]">
-                    <Table>
-                      <TableHeader className="bg-slate-900/50">
-                        <TableRow className="hover:bg-slate-900/80 border-slate-800">
-                          <TableHead className="w-[100px]">Event ID</TableHead>
-                          <TableHead className="w-[180px]">Timestamp</TableHead>
-                          <TableHead>Description</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Source</TableHead>
-                          <TableHead>Destination</TableHead>
-                          <TableHead>Risk Level</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredEvents.map((event) => (
-                          <TableRow key={event.id} className="hover:bg-slate-900/80 border-slate-800">
-                            <TableCell className="font-mono text-xs">{event.id}</TableCell>
-                            <TableCell className="text-xs">
-                              <div className="flex flex-col">
-                                <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
-                                <span className="text-slate-500">{new Date(event.timestamp).toLocaleDateString()}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>{event.description}</TableCell>
-                            <TableCell>{event.type}</TableCell>
-                            <TableCell className="font-mono text-xs">{event.source}</TableCell>
-                            <TableCell className="font-mono text-xs">{event.destination}</TableCell>
-                            <TableCell>
-                              <RiskLevelBadge level={event.riskLevel} />
-                            </TableCell>
-                            <TableCell>
-                              <StatusBadge status={event.status} />
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Open menu</span>
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-[160px] bg-slate-900 border-slate-800">
-                                  <DropdownMenuItem>View details</DropdownMenuItem>
-                                  <DropdownMenuItem>Investigate</DropdownMenuItem>
-                                  <DropdownMenuItem>Mark as resolved</DropdownMenuItem>
-                                  <DropdownMenuItem>Create ticket</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
+                    <div className="overflow-x-auto">
+                      <Table className="min-w-[800px]">
+                        <TableHeader className="bg-slate-900/50">
+                          <TableRow className="hover:bg-slate-900/80 border-slate-800">
+                            <TableHead className="w-[100px]">Event ID</TableHead>
+                            <TableHead className="w-[180px]">Timestamp</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Source</TableHead>
+                            <TableHead>Destination</TableHead>
+                            <TableHead>Risk Level</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredEvents.map((event) => (
+                            <TableRow key={event.id} className="hover:bg-slate-900/80 border-slate-800">
+                              <TableCell className="font-mono text-xs">{event.id}</TableCell>
+                              <TableCell className="text-xs">
+                                <div className="flex flex-col">
+                                  <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
+                                  <span className="text-slate-500">
+                                    {new Date(event.timestamp).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>{event.description}</TableCell>
+                              <TableCell>{event.type}</TableCell>
+                              <TableCell className="font-mono text-xs">{event.source}</TableCell>
+                              <TableCell className="font-mono text-xs">{event.destination}</TableCell>
+                              <TableCell>
+                                <RiskLevelBadge level={event.riskLevel} />
+                              </TableCell>
+                              <TableCell>
+                                <StatusBadge status={event.status} />
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                      <span className="sr-only">Open menu</span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="w-[160px] bg-slate-900 border-slate-800">
+                                    <DropdownMenuItem>View details</DropdownMenuItem>
+                                    <DropdownMenuItem>Investigate</DropdownMenuItem>
+                                    <DropdownMenuItem>Mark as resolved</DropdownMenuItem>
+                                    <DropdownMenuItem>Create ticket</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </ScrollArea>
                 </CardContent>
               </Card>

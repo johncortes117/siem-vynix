@@ -11,162 +11,181 @@ export default function NetworkActivityMap() {
     const ctx = canvasRef.current.getContext("2d")
     if (!ctx) return
 
-    // Set canvas dimensions
+    // Set canvas dimensions with device pixel ratio for crisp rendering
     const canvas = canvasRef.current
-    canvas.width = canvas.offsetWidth
-    canvas.height = canvas.offsetHeight
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    canvas.style.width = rect.width + "px"
+    canvas.style.height = rect.height + "px"
+
+    ctx.scale(dpr, dpr)
+
+    // Responsive scaling
+    const scale = Math.min(rect.width / 800, rect.height / 400)
 
     // Draw world map (simplified)
     const drawMap = () => {
-      ctx.fillStyle = "#1e293b" // slate-800
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // Background with subtle gradient
+      const bgGradient = ctx.createLinearGradient(0, 0, rect.width, rect.height)
+      bgGradient.addColorStop(0, "#1e293b")
+      bgGradient.addColorStop(1, "#0f172a")
+      ctx.fillStyle = bgGradient
+      ctx.fillRect(0, 0, rect.width, rect.height)
 
-      // Draw grid lines
+      // Draw grid lines with better spacing
       ctx.strokeStyle = "#334155" // slate-700
-      ctx.lineWidth = 1
+      ctx.lineWidth = 0.5
+      ctx.globalAlpha = 0.3
+
+      const gridSize = Math.max(20, 40 * scale)
 
       // Horizontal grid lines
-      for (let y = 0; y < canvas.height; y += 30) {
+      for (let y = 0; y < rect.height; y += gridSize) {
         ctx.beginPath()
         ctx.moveTo(0, y)
-        ctx.lineTo(canvas.width, y)
+        ctx.lineTo(rect.width, y)
         ctx.stroke()
       }
 
       // Vertical grid lines
-      for (let x = 0; x < canvas.width; x += 30) {
+      for (let x = 0; x < rect.width; x += gridSize) {
         ctx.beginPath()
         ctx.moveTo(x, 0)
-        ctx.lineTo(x, canvas.height)
+        ctx.lineTo(x, rect.height)
         ctx.stroke()
       }
 
-      // Draw continents (very simplified)
-      ctx.fillStyle = "#334155" // slate-700
+      ctx.globalAlpha = 1
+
+      // Draw continents with better proportions
+      ctx.fillStyle = "#475569" // slate-600
 
       // North America
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.1, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.3, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.3, canvas.height * 0.4)
-      ctx.lineTo(canvas.width * 0.2, canvas.height * 0.5)
-      ctx.lineTo(canvas.width * 0.1, canvas.height * 0.4)
+      ctx.moveTo(rect.width * 0.1, rect.height * 0.2)
+      ctx.lineTo(rect.width * 0.3, rect.height * 0.2)
+      ctx.lineTo(rect.width * 0.32, rect.height * 0.35)
+      ctx.lineTo(rect.width * 0.28, rect.height * 0.45)
+      ctx.lineTo(rect.width * 0.15, rect.height * 0.4)
+      ctx.lineTo(rect.width * 0.08, rect.height * 0.3)
       ctx.closePath()
       ctx.fill()
 
       // South America
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.2, canvas.height * 0.5)
-      ctx.lineTo(canvas.width * 0.3, canvas.height * 0.5)
-      ctx.lineTo(canvas.width * 0.25, canvas.height * 0.8)
-      ctx.lineTo(canvas.width * 0.2, canvas.height * 0.7)
+      ctx.moveTo(rect.width * 0.22, rect.height * 0.5)
+      ctx.lineTo(rect.width * 0.3, rect.height * 0.48)
+      ctx.lineTo(rect.width * 0.28, rect.height * 0.75)
+      ctx.lineTo(rect.width * 0.24, rect.height * 0.8)
+      ctx.lineTo(rect.width * 0.2, rect.height * 0.7)
       ctx.closePath()
       ctx.fill()
 
       // Europe
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.4, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.5, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.5, canvas.height * 0.3)
-      ctx.lineTo(canvas.width * 0.4, canvas.height * 0.3)
+      ctx.moveTo(rect.width * 0.42, rect.height * 0.18)
+      ctx.lineTo(rect.width * 0.52, rect.height * 0.2)
+      ctx.lineTo(rect.width * 0.5, rect.height * 0.32)
+      ctx.lineTo(rect.width * 0.4, rect.height * 0.3)
       ctx.closePath()
       ctx.fill()
 
       // Africa
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.4, canvas.height * 0.3)
-      ctx.lineTo(canvas.width * 0.5, canvas.height * 0.3)
-      ctx.lineTo(canvas.width * 0.5, canvas.height * 0.6)
-      ctx.lineTo(canvas.width * 0.4, canvas.height * 0.6)
+      ctx.moveTo(rect.width * 0.42, rect.height * 0.32)
+      ctx.lineTo(rect.width * 0.52, rect.height * 0.32)
+      ctx.lineTo(rect.width * 0.5, rect.height * 0.65)
+      ctx.lineTo(rect.width * 0.44, rect.height * 0.68)
+      ctx.lineTo(rect.width * 0.4, rect.height * 0.6)
       ctx.closePath()
       ctx.fill()
 
       // Asia
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.5, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.8, canvas.height * 0.2)
-      ctx.lineTo(canvas.width * 0.8, canvas.height * 0.5)
-      ctx.lineTo(canvas.width * 0.5, canvas.height * 0.5)
+      ctx.moveTo(rect.width * 0.52, rect.height * 0.15)
+      ctx.lineTo(rect.width * 0.85, rect.height * 0.18)
+      ctx.lineTo(rect.width * 0.82, rect.height * 0.5)
+      ctx.lineTo(rect.width * 0.5, rect.height * 0.48)
       ctx.closePath()
       ctx.fill()
 
       // Australia
       ctx.beginPath()
-      ctx.moveTo(canvas.width * 0.7, canvas.height * 0.6)
-      ctx.lineTo(canvas.width * 0.8, canvas.height * 0.6)
-      ctx.lineTo(canvas.width * 0.8, canvas.height * 0.7)
-      ctx.lineTo(canvas.width * 0.7, canvas.height * 0.7)
+      ctx.moveTo(rect.width * 0.72, rect.height * 0.65)
+      ctx.lineTo(rect.width * 0.82, rect.height * 0.63)
+      ctx.lineTo(rect.width * 0.8, rect.height * 0.75)
+      ctx.lineTo(rect.width * 0.7, rect.height * 0.73)
       ctx.closePath()
       ctx.fill()
-
-      // Add country labels
-      ctx.fillStyle = "#94a3b8" // slate-400
-      ctx.font = "10px Inter, system-ui, sans-serif"
-      ctx.textAlign = "center"
-
-      ctx.fillText("USA", canvas.width * 0.2, canvas.height * 0.3)
-      ctx.fillText("EU", canvas.width * 0.45, canvas.height * 0.25)
-      ctx.fillText("CHINA", canvas.width * 0.65, canvas.height * 0.3)
-      ctx.fillText("RUSSIA", canvas.width * 0.6, canvas.height * 0.2)
-      ctx.fillText("BRAZIL", canvas.width * 0.25, canvas.height * 0.6)
-      ctx.fillText("INDIA", canvas.width * 0.6, canvas.height * 0.4)
-      ctx.fillText("AUS", canvas.width * 0.75, canvas.height * 0.65)
     }
 
     // Draw activity points
     const drawActivityPoints = () => {
       // Define some hotspots - DATOS FICTICIOS
       const hotspots = [
-        { x: canvas.width * 0.2, y: canvas.height * 0.3, intensity: 0.8, color: "#ef4444", label: "USA: 128 events" }, // North America (red)
-        { x: canvas.width * 0.45, y: canvas.height * 0.25, intensity: 0.7, color: "#f59e0b", label: "EU: 95 events" }, // Europe (amber)
-        { x: canvas.width * 0.7, y: canvas.height * 0.3, intensity: 0.9, color: "#ef4444", label: "ASIA: 156 events" }, // Asia (red)
-        { x: canvas.width * 0.75, y: canvas.height * 0.65, intensity: 0.5, color: "#22c55e", label: "AUS: 42 events" }, // Australia (green)
-        {
-          x: canvas.width * 0.45,
-          y: canvas.height * 0.45,
-          intensity: 0.6,
-          color: "#f59e0b",
-          label: "AFRICA: 67 events",
-        }, // Africa (amber)
-        {
-          x: canvas.width * 0.25,
-          y: canvas.height * 0.6,
-          intensity: 0.4,
-          color: "#22c55e",
-          label: "S.AMERICA: 38 events",
-        }, // South America (green)
+        { x: rect.width * 0.2, y: rect.height * 0.3, intensity: 0.8, color: "#ef4444", label: "USA", count: 128 },
+        { x: rect.width * 0.46, y: rect.height * 0.25, intensity: 0.7, color: "#f59e0b", label: "EU", count: 95 },
+        { x: rect.width * 0.7, y: rect.height * 0.3, intensity: 0.9, color: "#ef4444", label: "ASIA", count: 156 },
+        { x: rect.width * 0.76, y: rect.height * 0.69, intensity: 0.5, color: "#22c55e", label: "AUS", count: 42 },
+        { x: rect.width * 0.46, y: rect.height * 0.5, intensity: 0.6, color: "#f59e0b", label: "AFR", count: 67 },
+        { x: rect.width * 0.25, y: rect.height * 0.62, intensity: 0.4, color: "#22c55e", label: "SA", count: 38 },
       ]
 
-      // Draw each hotspot
+      // Draw each hotspot with improved styling
       hotspots.forEach((spot) => {
-        // Draw glow
-        const gradient = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, 50 * spot.intensity)
-        gradient.addColorStop(0, `${spot.color}80`) // Semi-transparent
-        gradient.addColorStop(1, "transparent")
+        const baseRadius = Math.max(30, 60 * scale)
+        const glowRadius = baseRadius * spot.intensity
 
-        ctx.fillStyle = gradient
-        ctx.beginPath()
-        ctx.arc(spot.x, spot.y, 50 * spot.intensity, 0, Math.PI * 2)
-        ctx.fill()
+        // Draw multiple glow layers for better effect
+        for (let i = 3; i >= 1; i--) {
+          const gradient = ctx.createRadialGradient(spot.x, spot.y, 0, spot.x, spot.y, (glowRadius * i) / 3)
+          gradient.addColorStop(0, spot.color + Math.floor(80 / i).toString(16))
+          gradient.addColorStop(1, "transparent")
 
-        // Draw center point
+          ctx.fillStyle = gradient
+          ctx.beginPath()
+          ctx.arc(spot.x, spot.y, (glowRadius * i) / 3, 0, Math.PI * 2)
+          ctx.fill()
+        }
+
+        // Draw center point with pulse effect
+        const time = Date.now() / 1000
+        const pulseSize = 3 + Math.sin(time * 2 + spot.x) * 1.5
+
         ctx.fillStyle = spot.color
         ctx.beginPath()
-        ctx.arc(spot.x, spot.y, 3, 0, Math.PI * 2)
+        ctx.arc(spot.x, spot.y, pulseSize, 0, Math.PI * 2)
         ctx.fill()
 
-        // Draw label with event count
+        // Add white center dot
+        ctx.fillStyle = "#ffffff"
+        ctx.beginPath()
+        ctx.arc(spot.x, spot.y, 1, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Draw label with event count (responsive font size)
+        const fontSize = Math.max(8, 12 * scale)
         ctx.fillStyle = spot.color
-        ctx.font = "10px Inter, system-ui, sans-serif"
+        ctx.font = `bold ${fontSize}px Inter, system-ui, sans-serif`
         ctx.textAlign = "center"
-        ctx.fillText(spot.label, spot.x, spot.y - 15)
+        ctx.textBaseline = "bottom"
+
+        // Add text background for better readability
+        const textY = spot.y - glowRadius - 5
+        ctx.shadowColor = "#000000"
+        ctx.shadowBlur = 3
+        ctx.fillText(`${spot.label}: ${spot.count}`, spot.x, textY)
+        ctx.shadowBlur = 0
       })
 
-      // Draw some connection lines between hotspots
+      // Draw connection lines with animation
       ctx.strokeStyle = "#06b6d4" // cyan-500
       ctx.lineWidth = 1
+      ctx.globalAlpha = 0.6
 
-      // Function to draw a curved line between two points
       const drawCurvedLine = (x1: number, y1: number, x2: number, y2: number, curvature: number) => {
         const midX = (x1 + x2) / 2
         const midY = (y1 + y2) / 2 - curvature
@@ -177,33 +196,29 @@ export default function NetworkActivityMap() {
         ctx.stroke()
       }
 
-      // Draw some connections
-      drawCurvedLine(hotspots[0].x, hotspots[0].y, hotspots[1].x, hotspots[1].y, 50) // North America to Europe
-      drawCurvedLine(hotspots[1].x, hotspots[1].y, hotspots[2].x, hotspots[2].y, 40) // Europe to Asia
-      drawCurvedLine(hotspots[0].x, hotspots[0].y, hotspots[5].x, hotspots[5].y, -30) // North America to South America
-      drawCurvedLine(hotspots[1].x, hotspots[1].y, hotspots[4].x, hotspots[4].y, -20) // Europe to Africa
-      drawCurvedLine(hotspots[2].x, hotspots[2].y, hotspots[3].x, hotspots[3].y, -40) // Asia to Australia
+      // Draw connections
+      drawCurvedLine(hotspots[0].x, hotspots[0].y, hotspots[1].x, hotspots[1].y, 50 * scale)
+      drawCurvedLine(hotspots[1].x, hotspots[1].y, hotspots[2].x, hotspots[2].y, 40 * scale)
+      drawCurvedLine(hotspots[0].x, hotspots[0].y, hotspots[5].x, hotspots[5].y, -30 * scale)
+      drawCurvedLine(hotspots[1].x, hotspots[1].y, hotspots[4].x, hotspots[4].y, -20 * scale)
+      drawCurvedLine(hotspots[2].x, hotspots[2].y, hotspots[3].x, hotspots[3].y, -40 * scale)
 
-      // Add some animated particles along the connections
+      ctx.globalAlpha = 1
+
+      // Add animated particles
       const time = Date.now() / 1000
       const drawParticle = (x1: number, y1: number, x2: number, y2: number, curvature: number, offset: number) => {
-        const t = (Math.sin(time + offset) + 1) / 2 // Value between 0 and 1
+        const t = (Math.sin(time + offset) + 1) / 2
 
         const midX = (x1 + x2) / 2
         const midY = (y1 + y2) / 2 - curvature
 
-        // Quadratic bezier formula
         const px = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * midX + t * t * x2
         const py = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * midY + t * t * y2
 
-        ctx.fillStyle = "#06b6d4" // cyan-500
-        ctx.beginPath()
-        ctx.arc(px, py, 2, 0, Math.PI * 2)
-        ctx.fill()
-
-        // Add glow
+        ctx.fillStyle = "#06b6d4"
         ctx.shadowColor = "#06b6d4"
-        ctx.shadowBlur = 5
+        ctx.shadowBlur = 8
         ctx.beginPath()
         ctx.arc(px, py, 2, 0, Math.PI * 2)
         ctx.fill()
@@ -211,54 +226,50 @@ export default function NetworkActivityMap() {
       }
 
       // Draw particles on connections
-      drawParticle(hotspots[0].x, hotspots[0].y, hotspots[1].x, hotspots[1].y, 50, 0)
-      drawParticle(hotspots[1].x, hotspots[1].y, hotspots[2].x, hotspots[2].y, 40, 1)
-      drawParticle(hotspots[0].x, hotspots[0].y, hotspots[5].x, hotspots[5].y, -30, 2)
-      drawParticle(hotspots[1].x, hotspots[1].y, hotspots[4].x, hotspots[4].y, -20, 3)
-      drawParticle(hotspots[2].x, hotspots[2].y, hotspots[3].x, hotspots[3].y, -40, 4)
+      drawParticle(hotspots[0].x, hotspots[0].y, hotspots[1].x, hotspots[1].y, 50 * scale, 0)
+      drawParticle(hotspots[1].x, hotspots[1].y, hotspots[2].x, hotspots[2].y, 40 * scale, 1)
+      drawParticle(hotspots[0].x, hotspots[0].y, hotspots[5].x, hotspots[5].y, -30 * scale, 2)
 
-      // Add legend
-      ctx.fillStyle = "#f8fafc" // slate-50
-      ctx.font = "bold 12px Inter, system-ui, sans-serif"
+      // Add legend with responsive positioning
+      const legendFontSize = Math.max(10, 14 * scale)
+      const legendX = Math.max(10, 15 * scale)
+      const legendY = Math.max(15, 25 * scale)
+
+      ctx.fillStyle = "#f8fafc"
+      ctx.font = `bold ${legendFontSize}px Inter, system-ui, sans-serif`
       ctx.textAlign = "left"
-      ctx.fillText("Global Security Events", 10, 20)
+      ctx.textBaseline = "top"
+      ctx.fillText("Global Security Events", legendX, legendY)
 
-      ctx.fillStyle = "#94a3b8" // slate-400
-      ctx.font = "10px Inter, system-ui, sans-serif"
-      ctx.fillText("Total: 526 events in last 24h", 10, 35)
-
-      // Add color legend
-      const legendY = canvas.height - 60
-
-      // High risk
-      ctx.fillStyle = "#ef4444"
-      ctx.beginPath()
-      ctx.arc(15, legendY, 5, 0, Math.PI * 2)
-      ctx.fill()
       ctx.fillStyle = "#94a3b8"
-      ctx.textAlign = "left"
-      ctx.fillText("High Risk (284)", 25, legendY + 4)
+      ctx.font = `${Math.max(8, 12 * scale)}px Inter, system-ui, sans-serif`
+      ctx.fillText("Total: 526 events in last 24h", legendX, legendY + 20)
 
-      // Medium risk
-      ctx.fillStyle = "#f59e0b"
-      ctx.beginPath()
-      ctx.arc(15, legendY + 20, 5, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.fillStyle = "#94a3b8"
-      ctx.fillText("Medium Risk (162)", 25, legendY + 24)
+      // Add color legend (responsive positioning)
+      const legendBottomY = rect.height - Math.max(60, 80 * scale)
 
-      // Low risk
-      ctx.fillStyle = "#22c55e"
-      ctx.beginPath()
-      ctx.arc(15, legendY + 40, 5, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.fillStyle = "#94a3b8"
-      ctx.fillText("Low Risk (80)", 25, legendY + 44)
+      const legendItems = [
+        { color: "#ef4444", label: "High Risk (284)", y: 0 },
+        { color: "#f59e0b", label: "Medium Risk (162)", y: 18 },
+        { color: "#22c55e", label: "Low Risk (80)", y: 36 },
+      ]
+
+      legendItems.forEach((item) => {
+        ctx.fillStyle = item.color
+        ctx.beginPath()
+        ctx.arc(legendX + 8, legendBottomY + item.y + 8, 4, 0, Math.PI * 2)
+        ctx.fill()
+
+        ctx.fillStyle = "#94a3b8"
+        ctx.font = `${Math.max(8, 11 * scale)}px Inter, system-ui, sans-serif`
+        ctx.textAlign = "left"
+        ctx.fillText(item.label, legendX + 20, legendBottomY + item.y + 12)
+      })
     }
 
     // Animation loop
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, rect.width, rect.height)
       drawMap()
       drawActivityPoints()
       requestAnimationFrame(animate)
@@ -268,8 +279,12 @@ export default function NetworkActivityMap() {
 
     // Handle resize
     const handleResize = () => {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
+      const newRect = canvas.getBoundingClientRect()
+      canvas.width = newRect.width * dpr
+      canvas.height = newRect.height * dpr
+      canvas.style.width = newRect.width + "px"
+      canvas.style.height = newRect.height + "px"
+      ctx.scale(dpr, dpr)
     }
 
     window.addEventListener("resize", handleResize)
