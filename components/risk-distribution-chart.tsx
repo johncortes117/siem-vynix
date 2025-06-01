@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 
-export default function RiskDistributionChart() {
+interface RiskDistributionChartProps {
+  riskDistribution: Record<string, number>
+}
+
+export default function RiskDistributionChart({ riskDistribution }: RiskDistributionChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -38,12 +42,44 @@ export default function RiskDistributionChart() {
     ctx.scale(dpr, dpr)
     ctx.clearRect(0, 0, dimensions.width, dimensions.height)
 
-    // Data for the chart
+    // Usar datos reales de distribución de riesgo
+    const total = Object.values(riskDistribution).reduce((sum, count) => sum + count, 0)
+
     const data = [
-      { label: "High", value: 35, color: "#ef4444", count: 184 },
-      { label: "Medium", value: 45, color: "#f59e0b", count: 237 },
-      { label: "Low", value: 20, color: "#22c55e", count: 105 },
-    ]
+      {
+        label: "Critical",
+        value: total > 0 ? Math.round(((riskDistribution.critical || 0) / total) * 100) : 0,
+        color: "#ef4444",
+        count: riskDistribution.critical || 0,
+      },
+      {
+        label: "High",
+        value: total > 0 ? Math.round(((riskDistribution.high || 0) / total) * 100) : 0,
+        color: "#f59e0b",
+        count: riskDistribution.high || 0,
+      },
+      {
+        label: "Medium",
+        value: total > 0 ? Math.round(((riskDistribution.medium || 0) / total) * 100) : 0,
+        color: "#f59e0b",
+        count: riskDistribution.medium || 0,
+      },
+      {
+        label: "Low",
+        value: total > 0 ? Math.round(((riskDistribution.low || 0) / total) * 100) : 0,
+        color: "#22c55e",
+        count: riskDistribution.low || 0,
+      },
+    ].filter((item) => item.count > 0) // Solo mostrar niveles con eventos
+
+    if (total === 0) {
+      ctx.fillStyle = "#94a3b8"
+      ctx.font = "14px Inter, system-ui, sans-serif"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillText("No hay eventos", dimensions.width / 2, dimensions.height / 2)
+      return
+    }
 
     // Responsive sizing
     const isMobile = dimensions.width < 400
@@ -57,7 +93,7 @@ export default function RiskDistributionChart() {
     // Draw bars
     data.forEach((item, index) => {
       const y = startY + index * (barHeight + barSpacing)
-      const barWidth = (item.value / maxValue) * maxBarWidth
+      const barWidth = maxValue > 0 ? (item.value / maxValue) * maxBarWidth : 0
 
       // Draw label
       const labelFontSize = Math.max(8, Math.min(dimensions.width / 30, 12))
@@ -74,15 +110,17 @@ export default function RiskDistributionChart() {
       ctx.fill()
 
       // Draw value bar with gradient
-      const gradient = ctx.createLinearGradient(isMobile ? 55 : 80, y, (isMobile ? 55 : 80) + barWidth, y + barHeight)
-      gradient.addColorStop(0, item.color + "40")
-      gradient.addColorStop(0.5, item.color)
-      gradient.addColorStop(1, item.color + "CC")
+      if (barWidth > 0) {
+        const gradient = ctx.createLinearGradient(isMobile ? 55 : 80, y, (isMobile ? 55 : 80) + barWidth, y + barHeight)
+        gradient.addColorStop(0, item.color + "40")
+        gradient.addColorStop(0.5, item.color)
+        gradient.addColorStop(1, item.color + "CC")
 
-      ctx.fillStyle = gradient
-      ctx.beginPath()
-      ctx.roundRect(isMobile ? 55 : 80, y, barWidth, barHeight, 3)
-      ctx.fill()
+        ctx.fillStyle = gradient
+        ctx.beginPath()
+        ctx.roundRect(isMobile ? 55 : 80, y, barWidth, barHeight, 3)
+        ctx.fill()
+      }
 
       // Draw percentage
       const percentFontSize = Math.max(8, Math.min(dimensions.width / 35, 11))
@@ -114,14 +152,13 @@ export default function RiskDistributionChart() {
 
     // Draw total (hide on very small screens)
     if (dimensions.width > 250) {
-      const total = data.reduce((sum, item) => sum + item.count, 0)
       const totalFontSize = Math.max(8, Math.min(dimensions.width / 35, 11))
       ctx.fillStyle = "#94a3b8"
       ctx.font = `${totalFontSize}px Inter, system-ui, sans-serif`
       ctx.textAlign = "right"
       ctx.fillText(`Total: ${total}`, dimensions.width - 5, 8)
     }
-  }, [dimensions])
+  }, [dimensions, riskDistribution])
 
   return (
     <div ref={containerRef} className="relative w-full h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px]">

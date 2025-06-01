@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 
-export default function EventsChart() {
+interface EventsChartProps {
+  eventTypeDistribution: Record<string, number>
+}
+
+export default function EventsChart({ eventTypeDistribution }: EventsChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -30,34 +34,42 @@ export default function EventsChart() {
     const canvas = canvasRef.current
     const dpr = window.devicePixelRatio || 1
 
-    // Set actual canvas size
     canvas.width = dimensions.width * dpr
     canvas.height = dimensions.height * dpr
     canvas.style.width = dimensions.width + "px"
     canvas.style.height = dimensions.height + "px"
 
     ctx.scale(dpr, dpr)
-
-    // Clear canvas
     ctx.clearRect(0, 0, dimensions.width, dimensions.height)
 
-    // Calculate responsive sizes
+    // Convertir datos reales a formato de gráfica
+    const data = [
+      { value: eventTypeDistribution.Authentication || 0, color: "#06b6d4", label: "Authentication" },
+      { value: eventTypeDistribution.Network || 0, color: "#a855f7", label: "Network" },
+      { value: eventTypeDistribution.Malware || 0, color: "#f59e0b", label: "Malware" },
+      { value: eventTypeDistribution.Data || 0, color: "#ef4444", label: "Data" },
+      { value: eventTypeDistribution.System || 0, color: "#22c55e", label: "System" },
+      { value: eventTypeDistribution.Policy || 0, color: "#8b5cf6", label: "Policy" },
+    ].filter((item) => item.value > 0) // Solo mostrar categorías con eventos
+
+    const total = data.reduce((sum, item) => sum + item.value, 0)
+
+    if (total === 0) {
+      // Mostrar mensaje cuando no hay datos
+      ctx.fillStyle = "#94a3b8"
+      ctx.font = "14px Inter, system-ui, sans-serif"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillText("No hay eventos", dimensions.width / 2, dimensions.height / 2)
+      return
+    }
+
+    // Calcular responsive sizes
     const centerX = dimensions.width / 2
     const centerY = dimensions.height / 2
     const maxRadius = Math.min(centerX, centerY) - 20
-    const radius = Math.max(40, Math.min(maxRadius, 80)) // Min 40px, max 80px
+    const radius = Math.max(40, Math.min(maxRadius, 80))
     const innerRadius = radius * 0.55
-
-    // Data for the chart
-    const data = [
-      { value: 32, color: "#06b6d4", label: "Authentication" },
-      { value: 28, color: "#a855f7", label: "Network" },
-      { value: 18, color: "#f59e0b", label: "Malware" },
-      { value: 12, color: "#ef4444", label: "Data" },
-      { value: 10, color: "#22c55e", label: "System" },
-    ]
-
-    const total = data.reduce((sum, item) => sum + item.value, 0)
 
     // Draw segments
     let startAngle = -0.5 * Math.PI
@@ -114,7 +126,7 @@ export default function EventsChart() {
     ctx.fillStyle = "#94a3b8"
     ctx.font = `${smallFontSize}px Inter, system-ui, sans-serif`
     ctx.fillText("Total Events", centerX, centerY + fontSize / 2 + 2)
-  }, [dimensions])
+  }, [dimensions, eventTypeDistribution])
 
   return (
     <div ref={containerRef} className="relative w-full h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px]">

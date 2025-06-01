@@ -52,7 +52,7 @@ export default function WazuhStatusPanel({ agents, isLoading, onRefresh, lastUpd
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-cyan-500" />
             <div>
-              <CardTitle className="text-base">Wazuh Agent Status</CardTitle>
+              <CardTitle className="text-base text-slate-50">Wazuh Agent Status</CardTitle>
               <CardDescription className="text-slate-400 text-sm">
                 Real-time monitoring of security agents
               </CardDescription>
@@ -83,22 +83,22 @@ export default function WazuhStatusPanel({ agents, isLoading, onRefresh, lastUpd
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50">
             <Server className="h-6 w-6 text-cyan-500" />
             <div>
-              <p className="text-sm font-medium">Total Agents</p>
-              <p className="text-xl font-bold">{totalAgents}</p>
+              <p className="text-sm font-medium text-slate-300">Total Agents</p>
+              <p className="text-xl font-bold text-slate-50">{totalAgents}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50">
             <Activity className="h-6 w-6 text-green-500" />
             <div>
-              <p className="text-sm font-medium">Active</p>
+              <p className="text-sm font-medium text-slate-300">Active</p>
               <p className="text-xl font-bold text-green-500">{activeAgents}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50">
             <Shield className="h-6 w-6 text-amber-500" />
             <div>
-              <p className="text-sm font-medium">Health</p>
-              <p className="text-xl font-bold">{Math.round(connectionHealth)}%</p>
+              <p className="text-sm font-medium text-slate-300">Health</p>
+              <p className="text-xl font-bold text-slate-50">{Math.round(connectionHealth)}%</p>
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function WazuhStatusPanel({ agents, isLoading, onRefresh, lastUpd
         {/* Agent List */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium">Agent Details</h4>
+            <h4 className="text-sm font-medium text-slate-300">Agent Details</h4>
             <span className="text-xs text-slate-500">Last updated: {lastUpdate.toLocaleTimeString()}</span>
           </div>
 
@@ -131,11 +131,11 @@ export default function WazuhStatusPanel({ agents, isLoading, onRefresh, lastUpd
                 <div className="flex items-center gap-3">
                   {getStatusIcon(agent.status)}
                   <div>
-                    <p className="text-sm font-medium">{agent.name}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm font-medium text-slate-200">{agent.name}</p>
+                    <p className="text-xs text-slate-400">
                       {agent.ip} • {agent.os} • v{agent.version}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-300">
                       Events: {agent.eventsCount} • Vulns: {agent.vulnerabilitiesCount}
                     </p>
                   </div>
@@ -158,19 +158,21 @@ export default function WazuhStatusPanel({ agents, isLoading, onRefresh, lastUpd
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-slate-400">Manager Version:</span>
-            <span className="ml-2 font-medium">4.7.0</span>
+            <span className="ml-2 font-medium text-slate-200">4.7.0</span>
           </div>
           <div>
             <span className="text-slate-400">API Status:</span>
-            <span className="ml-2 font-medium text-green-500">Connected</span>
+            <span className="ml-2 font-medium text-green-400">Connected</span>
           </div>
           <div>
             <span className="text-slate-400">Rules Loaded:</span>
-            <span className="ml-2 font-medium">3,247</span>
+            <span className="ml-2 font-medium text-slate-200">3,247</span>
           </div>
           <div>
             <span className="text-slate-400">Total Events:</span>
-            <span className="ml-2 font-medium">{agents.reduce((sum, agent) => sum + agent.eventsCount, 0)}</span>
+            <span className="ml-2 font-medium text-slate-200">
+              {agents.reduce((sum, agent) => sum + agent.eventsCount, 0)}
+            </span>
           </div>
         </div>
       </CardContent>

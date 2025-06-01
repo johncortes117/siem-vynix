@@ -2,7 +2,16 @@
 
 import { useEffect, useRef, useState } from "react"
 
-export default function TimelineChart() {
+interface TimelineChartProps {
+  timelineData: Array<{
+    hour: number
+    high: number
+    medium: number
+    low: number
+  }>
+}
+
+export default function TimelineChart({ timelineData }: TimelineChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -50,36 +59,8 @@ export default function TimelineChart() {
     const chartWidth = dimensions.width - padding.left - padding.right
     const chartHeight = dimensions.height - padding.top - padding.bottom
 
-    // Sample data
-    const hours = 24
-    const data = [
-      { hour: 0, high: 2, medium: 3, low: 5 },
-      { hour: 1, high: 1, medium: 2, low: 4 },
-      { hour: 2, high: 0, medium: 1, low: 3 },
-      { hour: 3, high: 0, medium: 1, low: 2 },
-      { hour: 4, high: 1, medium: 0, low: 1 },
-      { hour: 5, high: 0, medium: 1, low: 2 },
-      { hour: 6, high: 1, medium: 2, low: 3 },
-      { hour: 7, high: 2, medium: 3, low: 4 },
-      { hour: 8, high: 3, medium: 5, low: 6 },
-      { hour: 9, high: 4, medium: 6, low: 8 },
-      { hour: 10, high: 3, medium: 5, low: 7 },
-      { hour: 11, high: 2, medium: 4, low: 6 },
-      { hour: 12, high: 3, medium: 5, low: 5 },
-      { hour: 13, high: 4, medium: 6, low: 7 },
-      { hour: 14, high: 5, medium: 7, low: 8 },
-      { hour: 15, high: 4, medium: 6, low: 7 },
-      { hour: 16, high: 3, medium: 5, low: 6 },
-      { hour: 17, high: 4, medium: 4, low: 5 },
-      { hour: 18, high: 3, medium: 3, low: 4 },
-      { hour: 19, high: 2, medium: 4, low: 5 },
-      { hour: 20, high: 3, medium: 3, low: 4 },
-      { hour: 21, high: 2, medium: 2, low: 3 },
-      { hour: 22, high: 1, medium: 2, low: 4 },
-      { hour: 23, high: 2, medium: 3, low: 5 },
-    ]
-
-    const maxValue = Math.max(...data.map((d) => d.high + d.medium + d.low))
+    const hours = timelineData.length
+    const maxValue = Math.max(...timelineData.map((d) => d.high + d.medium + d.low), 1)
 
     // Draw axes
     const drawAxes = () => {
@@ -109,7 +90,7 @@ export default function TimelineChart() {
       const hourStep = isMobile ? 6 : 4
       for (let i = 0; i < hours; i += hourStep) {
         const x = padding.left + (i / (hours - 1)) * chartWidth
-        ctx.fillText(`${i}h`, x, dimensions.height - padding.bottom + 5)
+        ctx.fillText(`${timelineData[i]?.hour || 0}h`, x, dimensions.height - padding.bottom + 5)
       }
 
       // Y-axis labels
@@ -142,24 +123,24 @@ export default function TimelineChart() {
     const drawBars = () => {
       const barWidth = Math.max(1, (chartWidth / hours) * 0.6)
 
-      data.forEach((d, i) => {
+      timelineData.forEach((d, i) => {
         const x = padding.left + i * (chartWidth / (hours - 1)) - barWidth / 2
         let y = dimensions.height - padding.bottom
 
         // Low risk
-        const lowHeight = (d.low / maxValue) * chartHeight
+        const lowHeight = maxValue > 0 ? (d.low / maxValue) * chartHeight : 0
         ctx.fillStyle = "#22c55e"
         ctx.fillRect(x, y - lowHeight, barWidth, lowHeight)
         y -= lowHeight
 
         // Medium risk
-        const mediumHeight = (d.medium / maxValue) * chartHeight
+        const mediumHeight = maxValue > 0 ? (d.medium / maxValue) * chartHeight : 0
         ctx.fillStyle = "#f59e0b"
         ctx.fillRect(x, y - mediumHeight, barWidth, mediumHeight)
         y -= mediumHeight
 
         // High risk
-        const highHeight = (d.high / maxValue) * chartHeight
+        const highHeight = maxValue > 0 ? (d.high / maxValue) * chartHeight : 0
         ctx.fillStyle = "#ef4444"
         ctx.fillRect(x, y - highHeight, barWidth, highHeight)
       })
@@ -167,7 +148,7 @@ export default function TimelineChart() {
 
     // Draw line
     const drawLines = () => {
-      const totals = data.map((d) => d.high + d.medium + d.low)
+      const totals = timelineData.map((d) => d.high + d.medium + d.low)
 
       ctx.strokeStyle = "#06b6d4"
       ctx.lineWidth = 2
@@ -175,7 +156,7 @@ export default function TimelineChart() {
 
       totals.forEach((total, i) => {
         const x = padding.left + i * (chartWidth / (hours - 1))
-        const y = dimensions.height - padding.bottom - (total / maxValue) * chartHeight
+        const y = dimensions.height - padding.bottom - (maxValue > 0 ? (total / maxValue) * chartHeight : 0)
 
         if (i === 0) {
           ctx.moveTo(x, y)
@@ -190,7 +171,7 @@ export default function TimelineChart() {
       const pointSize = Math.max(1, Math.min(3, dimensions.width / 200))
       totals.forEach((total, i) => {
         const x = padding.left + i * (chartWidth / (hours - 1))
-        const y = dimensions.height - padding.bottom - (total / maxValue) * chartHeight
+        const y = dimensions.height - padding.bottom - (maxValue > 0 ? (total / maxValue) * chartHeight : 0)
 
         ctx.fillStyle = "#06b6d4"
         ctx.beginPath()
@@ -236,7 +217,7 @@ export default function TimelineChart() {
         })
 
         // Summary
-        const totalEvents = data.reduce((sum, d) => sum + d.high + d.medium + d.low, 0)
+        const totalEvents = timelineData.reduce((sum, d) => sum + d.high + d.medium + d.low, 0)
         ctx.fillStyle = "#f8fafc"
         ctx.font = `bold ${legendFontSize + 1}px Inter, system-ui, sans-serif`
         ctx.textAlign = "left"
@@ -249,7 +230,7 @@ export default function TimelineChart() {
     drawBars()
     drawLines()
     drawLegend()
-  }, [dimensions])
+  }, [dimensions, timelineData])
 
   return (
     <div ref={containerRef} className="relative w-full h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px]">

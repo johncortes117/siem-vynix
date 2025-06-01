@@ -177,7 +177,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
         <div className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-cyan-500" />
           <div>
-            <CardTitle className="text-base">Security Report Generator</CardTitle>
+            <CardTitle className="text-base text-slate-50">Security Report Generator</CardTitle>
             <CardDescription className="text-slate-400 text-sm">
               Generate comprehensive security analysis reports
             </CardDescription>
@@ -188,7 +188,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
         {/* Date Range Selection */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           <div className="space-y-2">
-            <Label htmlFor="startDate" className="text-sm font-medium">
+            <Label htmlFor="startDate" className="text-sm font-medium text-slate-300">
               Start Date
             </Label>
             <div className="relative">
@@ -203,7 +203,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="endDate" className="text-sm font-medium">
+            <Label htmlFor="endDate" className="text-sm font-medium text-slate-300">
               End Date
             </Label>
             <div className="relative">
@@ -221,7 +221,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
 
         {/* Report Content Selection */}
         <div className="space-y-3 w-full">
-          <Label className="text-sm font-medium">Include in Report</Label>
+          <Label className="text-sm font-medium text-slate-300">Include in Report</Label>
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -231,7 +231,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
                   setReportConfig((prev) => ({ ...prev, includeEvents: checked as boolean }))
                 }
               />
-              <Label htmlFor="includeEvents" className="text-sm">
+              <Label htmlFor="includeEvents" className="text-sm text-slate-300">
                 Security Events ({counts.events} in selected period)
               </Label>
             </div>
@@ -243,7 +243,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
                   setReportConfig((prev) => ({ ...prev, includeVulnerabilities: checked as boolean }))
                 }
               />
-              <Label htmlFor="includeVulnerabilities" className="text-sm">
+              <Label htmlFor="includeVulnerabilities" className="text-sm text-slate-300">
                 Vulnerabilities ({counts.vulnerabilities} in selected period)
               </Label>
             </div>
@@ -255,7 +255,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
                   setReportConfig((prev) => ({ ...prev, includeMetrics: checked as boolean }))
                 }
               />
-              <Label htmlFor="includeMetrics" className="text-sm">
+              <Label htmlFor="includeMetrics" className="text-sm text-slate-300">
                 System Metrics & Analysis
               </Label>
             </div>
@@ -264,7 +264,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
 
         {/* Format Selection */}
         <div className="space-y-2 w-full">
-          <Label className="text-sm font-medium">Report Format</Label>
+          <Label className="text-sm font-medium text-slate-300">Report Format</Label>
           <Select
             value={reportConfig.format}
             onValueChange={(value: "pdf" | "json" | "csv") => setReportConfig((prev) => ({ ...prev, format: value }))}
@@ -284,19 +284,19 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
 
         {/* Report Preview */}
         <div className="space-y-3 w-full">
-          <Label className="text-sm font-medium">Report Preview</Label>
+          <Label className="text-sm font-medium text-slate-300">Report Preview</Label>
           <div className="grid grid-cols-3 gap-4 p-4 rounded-lg bg-slate-900/50 w-full">
             <div className="text-center">
               <div className="text-2xl font-bold text-cyan-500">{counts.events}</div>
-              <div className="text-xs text-slate-400">Security Events</div>
+              <div className="text-xs text-slate-200">Security Events</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-amber-500">{counts.vulnerabilities}</div>
-              <div className="text-xs text-slate-400">Vulnerabilities</div>
+              <div className="text-xs text-slate-200">Vulnerabilities</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-red-500">{counts.criticalIssues}</div>
-              <div className="text-xs text-slate-400">Critical Issues</div>
+              <div className="text-xs text-slate-200">Critical Issues</div>
             </div>
           </div>
 
@@ -305,7 +305,7 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
               <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20">
                 High Priority
               </Badge>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-slate-200">
                 This report contains {counts.criticalIssues} critical security issues requiring immediate attention
               </span>
             </div>
