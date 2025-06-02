@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"; // Added import for Next.js Image component
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
@@ -353,14 +354,17 @@ SidebarInput.displayName = "SidebarInput"
 const SidebarHeader = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => { // Modified to accept children
   return (
     <div
       ref={ref}
       data-sidebar="header"
       className={cn("flex flex-col gap-2 p-2", className)}
       {...props}
-    />
+    >
+      {/* Default content can be placed here if needed, or entirely replaced by children */}
+      {children} 
+    </div>
   )
 })
 SidebarHeader.displayName = "SidebarHeader"

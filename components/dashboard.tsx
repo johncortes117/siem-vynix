@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image";
 import {
   Activity,
   AlertTriangle,
@@ -117,7 +118,7 @@ const MetricCard = ({
 }) => {
   const changeColor = {
     positive: "text-green-500",
-    negative: "text-red-500",
+    negative: "text-red-500", // Added missing negative case
     neutral: "text-slate-500",
   }
 
@@ -361,7 +362,8 @@ export default function Dashboard() {
           <Sidebar className="border-r border-slate-800">
             <SidebarHeader className="border-b border-slate-800 px-4 py-6">
               <div className="flex items-center gap-2">
-                <ShieldAlert className="h-6 w-6 text-cyan-500" />
+                {/* <ShieldAlert className="h-6 w-6 text-cyan-500" /> */}
+                <Image src="/logo-centinela.png" alt="Centinela Logo" width={24} height={24} />
                 <h1 className="text-xl font-bold">Centinela</h1>
               </div>
             </SidebarHeader>
