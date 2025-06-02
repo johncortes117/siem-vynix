@@ -356,649 +356,651 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="flex h-screen bg-slate-950 text-slate-50">
-        <Sidebar className="border-r border-slate-800">
-          <SidebarHeader className="border-b border-slate-800 px-4 py-6">
-            <div className="flex items-center gap-2">
-              <ShieldAlert className="h-6 w-6 text-cyan-500" />
-              <h1 className="text-xl font-bold">Centinela</h1>
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Security Operations</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {navItems.map((item) => (
-                    <SidebarMenuItem key={item.key}>
-                      <SidebarMenuButton
-                        className={activeSection === item.key ? "bg-slate-800 text-cyan-500" : ""}
-                        onClick={() => setActiveSection(item.key)}
+      <div className="flex h-screen bg-slate-950 text-slate-50 w-full">
+        <div className="w-full max-w-[1600px] mx-auto flex">
+          <Sidebar className="border-r border-slate-800">
+            <SidebarHeader className="border-b border-slate-800 px-4 py-6">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="h-6 w-6 text-cyan-500" />
+                <h1 className="text-xl font-bold">Centinela</h1>
+              </div>
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>Security Operations</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {navItems.map((item) => (
+                      <SidebarMenuItem key={item.key}>
+                        <SidebarMenuButton
+                          className={activeSection === item.key ? "bg-slate-800 text-cyan-500" : ""}
+                          onClick={() => setActiveSection(item.key)}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter className="border-t border-slate-800 p-4">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
+                  <AvatarFallback className="bg-slate-800 text-cyan-500">AD</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">Admin User</span>
+                  <span className="text-xs text-slate-500">Security Analyst</span>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="ml-auto h-8 w-8">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40 bg-slate-900 border-slate-800">
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </SidebarFooter>
+          </Sidebar>
+
+          <div className="flex flex-col flex-1 overflow-hidden">
+            {/* Header */}
+            <header className="flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/50 px-4 sm:px-6 backdrop-blur-sm">
+              <SidebarTrigger className="text-slate-400 hover:text-slate-50" />
+              <div className="relative flex-1 max-w-xs sm:max-w-md">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                <Input
+                  type="search"
+                  placeholder="Search events..."
+                  className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="ml-auto flex items-center gap-2 sm:gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 hidden sm:flex"
+                >
+                  <Calendar className="h-4 w-4" />
+                  <span className="hidden md:inline">Jan 19, 2025</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Bell className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
+            </header>
+
+            {/* Main content */}
+            <main className="flex-1 overflow-auto p-4 sm:p-6">
+              <div className="mx-auto max-w-7xl w-full space-y-4 sm:space-y-6">
+                {/* Page header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-bold">
+                      {activeSection === "overview" && "Security Operations Center"}
+                      {activeSection === "events" && "Security Events"}
+                      {activeSection === "vulnerabilities" && "Vulnerability Management"}
+                      {activeSection === "reports" && "Security Reports"}
+                      {activeSection === "settings" && "System Settings"}
+                    </h1>
+                    <p className="text-sm text-slate-400">
+                      {activeSection === "overview" &&
+                        (isConnected
+                          ? `Powered by Wazuh • ${metrics.connectedAgents}/${metrics.totalAgents} agents connected`
+                          : "Connect to Wazuh to start monitoring")}
+                      {activeSection === "events" &&
+                        (isAnalyzed
+                          ? `${metrics.totalEvents} events detected • ${metrics.activeThreats} active threats`
+                          : "Run analysis to detect security events")}
+                      {activeSection === "vulnerabilities" &&
+                        (isAnalyzed
+                          ? `${vulnerabilities.length} vulnerabilities found • ${metrics.criticalVulnerabilities} critical`
+                          : "Run analysis to detect vulnerabilities")}
+                      {activeSection === "reports" && "Generate comprehensive security analysis reports"}
+                      {activeSection === "settings" && "Configure system preferences and integrations"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {isAnalyzed && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={refreshData}
+                        disabled={isLoading}
+                        className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50"
                       >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          <SidebarFooter className="border-t border-slate-800 p-4">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                <AvatarFallback className="bg-slate-800 text-cyan-500">AD</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">Admin User</span>
-                <span className="text-xs text-slate-500">Security Analyst</span>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="ml-auto h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40 bg-slate-900 border-slate-800">
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </SidebarFooter>
-        </Sidebar>
-
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Header */}
-          <header className="flex h-16 items-center gap-4 border-b border-slate-800 bg-slate-950/50 px-4 sm:px-6 backdrop-blur-sm">
-            <SidebarTrigger className="text-slate-400 hover:text-slate-50" />
-            <div className="relative flex-1 max-w-xs sm:max-w-md">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
-              <Input
-                type="search"
-                placeholder="Search events..."
-                className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="ml-auto flex items-center gap-2 sm:gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 hidden sm:flex"
-              >
-                <Calendar className="h-4 w-4" />
-                <span className="hidden md:inline">Jan 19, 2025</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
-              >
-                <Bell className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50 h-8 w-8 sm:h-10 sm:w-10"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
-          </header>
-
-          {/* Main content */}
-          <main className="flex-1 overflow-auto p-4 sm:p-6">
-            <div className="mx-auto max-w-7xl w-full space-y-4 sm:space-y-6">
-              {/* Page header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold">
-                    {activeSection === "overview" && "Security Operations Center"}
-                    {activeSection === "events" && "Security Events"}
-                    {activeSection === "vulnerabilities" && "Vulnerability Management"}
-                    {activeSection === "reports" && "Security Reports"}
-                    {activeSection === "settings" && "System Settings"}
-                  </h1>
-                  <p className="text-sm text-slate-400">
-                    {activeSection === "overview" &&
-                      (isConnected
-                        ? `Powered by Wazuh • ${metrics.connectedAgents}/${metrics.totalAgents} agents connected`
-                        : "Connect to Wazuh to start monitoring")}
-                    {activeSection === "events" &&
-                      (isAnalyzed
-                        ? `${metrics.totalEvents} events detected • ${metrics.activeThreats} active threats`
-                        : "Run analysis to detect security events")}
-                    {activeSection === "vulnerabilities" &&
-                      (isAnalyzed
-                        ? `${vulnerabilities.length} vulnerabilities found • ${metrics.criticalVulnerabilities} critical`
-                        : "Run analysis to detect vulnerabilities")}
-                    {activeSection === "reports" && "Generate comprehensive security analysis reports"}
-                    {activeSection === "settings" && "Configure system preferences and integrations"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  {isAnalyzed && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={refreshData}
-                      disabled={isLoading}
-                      className="gap-2 border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-50"
-                    >
-                      <Filter className="h-4 w-4" />
-                      <span>Refresh Data</span>
-                    </Button>
-                  )}
-                  {isConnected && !isAnalyzed && activeSection !== "reports" && activeSection !== "settings" && (
-                    <Button
-                      size="sm"
-                      className="gap-2 bg-cyan-600 hover:bg-cyan-700"
-                      onClick={runAnalysis}
-                      disabled={isAnalyzing}
-                    >
-                      {isAnalyzing ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Terminal className="h-4 w-4 mr-2" />
-                      )}
-                      <span className="hidden sm:inline">Run Analysis</span>
-                      <span className="sm:hidden">Analyze</span>
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              {/* Main content - renderizado condicional basado en activeSection */}
-              {activeSection === "overview" && (
-                <div className="space-y-4 sm:space-y-6 w-full">
-                  {/* Estado de conexión y análisis */}
-                  {!isAnalyzed && (
-                    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
-                      <ConnectionStatus
-                        isConnected={isConnected}
-                        isConnecting={isConnecting}
-                        connectionProgress={connectionProgress}
-                        connectToWazuh={connectToWazuh}
-                      />
-                      <AnalysisStatus
-                        isConnected={isConnected}
-                        isAnalyzed={isAnalyzed}
-                        isAnalyzing={isAnalyzing}
-                        analysisProgress={analysisProgress}
-                        runAnalysis={runAnalysis}
-                      />
-                    </div>
-                  )}
-
-                  {/* Metrics - usando datos reales (solo mostrar si hay análisis) */}
-                  {isAnalyzed && (
-                    <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
-                      <MetricCard
-                        icon={AlertTriangle}
-                        title="Active Threats"
-                        value={metrics.activeThreats.toString()}
-                        change={`${metrics.criticalVulnerabilities} critical`}
-                        changeType="negative"
-                        description="Requires immediate attention"
-                      />
-                      <MetricCard
-                        icon={Bug}
-                        title="Vulnerabilities"
-                        value={vulnCounts.total.toString()}
-                        change={`${vulnCounts.critical} critical`}
-                        changeType="negative"
-                        description="Open security issues"
-                      />
-                      <MetricCard
-                        icon={Activity}
-                        title="Security Events"
-                        value={metrics.totalEvents.toString()}
-                        change="Last 24 hours"
-                        changeType="neutral"
-                        description="Detected by Wazuh agents"
-                      />
-                      <MetricCard
-                        icon={Shield}
-                        title="Security Score"
-                        value={`${metrics.securityScore}/100`}
-                        change={metrics.securityScore > 80 ? "+2 this week" : "Needs improvement"}
-                        changeType={metrics.securityScore > 80 ? "positive" : "negative"}
-                        description="Overall security posture"
-                      />
-                      <MetricCard
-                        icon={Clock}
-                        title="Response Time"
-                        value={metrics.avgResponseTime}
-                        change="Target: <5 minutes"
-                        changeType="positive"
-                        description="Average incident response"
-                      />
-                    </div>
-                  )}
-
-                  {/* Wazuh Status Panel (solo mostrar si está conectado) */}
-                  {isConnected && (
-                    <WazuhStatusPanel
-                      agents={agents}
-                      isLoading={isLoading}
-                      onRefresh={refreshData}
-                      lastUpdate={lastUpdate}
-                    />
-                  )}
-
-                  {/* Charts - usando datos reales (solo mostrar si hay análisis) */}
-                  {isAnalyzed && (
-                    <>
-                      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
-                        <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-sm sm:text-base text-slate-50">
-                              Security Events Timeline
-                            </CardTitle>
-                            <CardDescription className="text-slate-400 text-xs sm:text-sm">
-                              Last 24 hours of security events from Wazuh agents
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <TimelineChart timelineData={chartData.timelineData} />
-                          </CardContent>
-                        </Card>
-                        <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-sm sm:text-base text-slate-50">Risk Distribution</CardTitle>
-                            <CardDescription className="text-slate-400 text-xs sm:text-sm">
-                              Events and vulnerabilities by risk level
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <RiskDistributionChart riskDistribution={chartData.riskDistribution} />
-                          </CardContent>
-                        </Card>
-                      </div>
-
-                      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
-                        <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm lg:col-span-2">
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-sm sm:text-base text-slate-50">Network Activity Map</CardTitle>
-                            <CardDescription className="text-slate-400 text-xs sm:text-sm">
-                              Geographic distribution of security events in Ecuador
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <NetworkActivityMap networkActivityData={chartData.networkActivityData} />
-                          </CardContent>
-                        </Card>
-                        <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-sm sm:text-base text-slate-50">Event Types</CardTitle>
-                            <CardDescription className="text-slate-400 text-xs sm:text-sm">
-                              Distribution by category
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <EventsChart eventTypeDistribution={chartData.eventTypeDistribution} />
-                            <div className="mt-4 space-y-2 sm:space-y-3">
-                              {Object.entries(chartData.eventTypeDistribution).map(([type, count]) => {
-                                const colors = {
-                                  Authentication: "#06b6d4",
-                                  Network: "#a855f7",
-                                  Malware: "#f59e0b",
-                                  Data: "#ef4444",
-                                  System: "#22c55e",
-                                  Policy: "#8b5cf6",
-                                }
-                                const total = Object.values(chartData.eventTypeDistribution).reduce(
-                                  (sum, c) => sum + c,
-                                  0,
-                                )
-                                const percentage = total > 0 ? Math.round((count / total) * 100) : 0
-
-                                return (
-                                  <div key={type} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <div
-                                        className="h-2 w-2 sm:h-3 sm:w-3 rounded-full"
-                                        style={{ backgroundColor: colors[type as keyof typeof colors] || "#64748b" }}
-                                      />
-                                      <span className="text-xs sm:text-sm text-slate-200">{type}</span>
-                                    </div>
-                                    <span className="text-xs sm:text-sm font-medium text-slate-200">{percentage}%</span>
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {activeSection === "events" && (
-                <div className="space-y-4 sm:space-y-6 w-full">
-                  {/* Security events table */}
-                  {!isAnalyzed ? (
-                    <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                      <CardContent className="flex flex-col items-center justify-center py-12">
-                        <Shield className="h-12 w-12 text-slate-700 mb-4" />
-                        <h3 className="text-lg font-medium text-slate-300 mb-2">No Security Events Available</h3>
-                        <p className="text-slate-400 text-center max-w-md mb-6">
-                          Connect to Wazuh and run a security analysis to detect and display security events.
-                        </p>
-                        {!isConnected ? (
-                          <Button onClick={connectToWazuh} className="bg-cyan-600 hover:bg-cyan-700">
-                            <Database className="h-4 w-4 mr-2" />
-                            Connect to Wazuh
-                          </Button>
+                        <Filter className="h-4 w-4" />
+                        <span>Refresh Data</span>
+                      </Button>
+                    )}
+                    {isConnected && !isAnalyzed && activeSection !== "reports" && activeSection !== "settings" && (
+                      <Button
+                        size="sm"
+                        className="gap-2 bg-cyan-600 hover:bg-cyan-700"
+                        onClick={runAnalysis}
+                        disabled={isAnalyzing}
+                      >
+                        {isAnalyzing ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : (
-                          <Button onClick={runAnalysis} className="bg-cyan-600 hover:bg-cyan-700">
-                            <Terminal className="h-4 w-4 mr-2" />
-                            Run Analysis
-                          </Button>
+                          <Terminal className="h-4 w-4 mr-2" />
                         )}
-                      </CardContent>
-                    </Card>
-                  ) : (
+                        <span className="hidden sm:inline">Run Analysis</span>
+                        <span className="sm:hidden">Analyze</span>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Main content - renderizado condicional basado en activeSection */}
+                {activeSection === "overview" && (
+                  <div className="space-y-4 sm:space-y-6 w-full">
+                    {/* Estado de conexión y análisis */}
+                    {!isAnalyzed && (
+                      <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+                        <ConnectionStatus
+                          isConnected={isConnected}
+                          isConnecting={isConnecting}
+                          connectionProgress={connectionProgress}
+                          connectToWazuh={connectToWazuh}
+                        />
+                        <AnalysisStatus
+                          isConnected={isConnected}
+                          isAnalyzed={isAnalyzed}
+                          isAnalyzing={isAnalyzing}
+                          analysisProgress={analysisProgress}
+                          runAnalysis={runAnalysis}
+                        />
+                      </div>
+                    )}
+
+                    {/* Metrics - usando datos reales (solo mostrar si hay análisis) */}
+                    {isAnalyzed && (
+                      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
+                        <MetricCard
+                          icon={AlertTriangle}
+                          title="Active Threats"
+                          value={metrics.activeThreats.toString()}
+                          change={`${metrics.criticalVulnerabilities} critical`}
+                          changeType="negative"
+                          description="Requires immediate attention"
+                        />
+                        <MetricCard
+                          icon={Bug}
+                          title="Vulnerabilities"
+                          value={vulnCounts.total.toString()}
+                          change={`${vulnCounts.critical} critical`}
+                          changeType="negative"
+                          description="Open security issues"
+                        />
+                        <MetricCard
+                          icon={Activity}
+                          title="Security Events"
+                          value={metrics.totalEvents.toString()}
+                          change="Last 24 hours"
+                          changeType="neutral"
+                          description="Detected by Wazuh agents"
+                        />
+                        <MetricCard
+                          icon={Shield}
+                          title="Security Score"
+                          value={`${metrics.securityScore}/100`}
+                          change={metrics.securityScore > 80 ? "+2 this week" : "Needs improvement"}
+                          changeType={metrics.securityScore > 80 ? "positive" : "negative"}
+                          description="Overall security posture"
+                        />
+                        <MetricCard
+                          icon={Clock}
+                          title="Response Time"
+                          value={metrics.avgResponseTime}
+                          change="Target: <5 minutes"
+                          changeType="positive"
+                          description="Average incident response"
+                        />
+                      </div>
+                    )}
+
+                    {/* Wazuh Status Panel (solo mostrar si está conectado) */}
+                    {isConnected && (
+                      <WazuhStatusPanel
+                        agents={agents}
+                        isLoading={isLoading}
+                        onRefresh={refreshData}
+                        lastUpdate={lastUpdate}
+                      />
+                    )}
+
+                    {/* Charts - usando datos reales (solo mostrar si hay análisis) */}
+                    {isAnalyzed && (
+                      <>
+                        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+                          <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-sm sm:text-base text-slate-50">
+                                Security Events Timeline
+                              </CardTitle>
+                              <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                                Last 24 hours of security events from Wazuh agents
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <TimelineChart timelineData={chartData.timelineData} />
+                            </CardContent>
+                          </Card>
+                          <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-sm sm:text-base text-slate-50">Risk Distribution</CardTitle>
+                              <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                                Events and vulnerabilities by risk level
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <RiskDistributionChart riskDistribution={chartData.riskDistribution} />
+                            </CardContent>
+                          </Card>
+                        </div>
+
+                        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
+                          <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm lg:col-span-2">
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-sm sm:text-base text-slate-50">Network Activity Map</CardTitle>
+                              <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                                Geographic distribution of security events in Ecuador
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <NetworkActivityMap networkActivityData={chartData.networkActivityData} />
+                            </CardContent>
+                          </Card>
+                          <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-sm sm:text-base text-slate-50">Event Types</CardTitle>
+                              <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                                Distribution by category
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <EventsChart eventTypeDistribution={chartData.eventTypeDistribution} />
+                              <div className="mt-4 space-y-2 sm:space-y-3">
+                                {Object.entries(chartData.eventTypeDistribution).map(([type, count]) => {
+                                  const colors = {
+                                    Authentication: "#06b6d4",
+                                    Network: "#a855f7",
+                                    Malware: "#f59e0b",
+                                    Data: "#ef4444",
+                                    System: "#22c55e",
+                                    Policy: "#8b5cf6",
+                                  }
+                                  const total = Object.values(chartData.eventTypeDistribution).reduce(
+                                    (sum, c) => sum + c,
+                                    0,
+                                  )
+                                  const percentage = total > 0 ? Math.round((count / total) * 100) : 0
+
+                                  return (
+                                    <div key={type} className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <div
+                                          className="h-2 w-2 sm:h-3 sm:w-3 rounded-full"
+                                          style={{ backgroundColor: colors[type as keyof typeof colors] || "#64748b" }}
+                                        />
+                                        <span className="text-xs sm:text-sm text-slate-200">{type}</span>
+                                      </div>
+                                      <span className="text-xs sm:text-sm font-medium text-slate-200">{percentage}%</span>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {activeSection === "events" && (
+                  <div className="space-y-4 sm:space-y-6 w-full">
+                    {/* Security events table */}
+                    {!isAnalyzed ? (
+                      <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                        <CardContent className="flex flex-col items-center justify-center py-12">
+                          <Shield className="h-12 w-12 text-slate-700 mb-4" />
+                          <h3 className="text-lg font-medium text-slate-300 mb-2">No Security Events Available</h3>
+                          <p className="text-slate-400 text-center max-w-md mb-6">
+                            Connect to Wazuh and run a security analysis to detect and display security events.
+                          </p>
+                          {!isConnected ? (
+                            <Button onClick={connectToWazuh} className="bg-cyan-600 hover:bg-cyan-700">
+                              <Database className="h-4 w-4 mr-2" />
+                              Connect to Wazuh
+                            </Button>
+                          ) : (
+                            <Button onClick={runAnalysis} className="bg-cyan-600 hover:bg-cyan-700">
+                              <Terminal className="h-4 w-4 mr-2" />
+                              Run Analysis
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                        <CardHeader className="pb-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                              <CardTitle className="text-sm sm:text-base text-slate-50">Security Events</CardTitle>
+                              <CardDescription className="text-slate-400 text-xs sm:text-sm">
+                                Real-time security events detected by Wazuh agents
+                              </CardDescription>
+                              <div className="mt-2 text-xs text-slate-400">
+                                <span className="font-medium text-cyan-500">{metrics.totalEvents}</span> events detected |
+                                <span className="font-medium text-red-500 ml-2">{metrics.activeThreats}</span> active
+                                threats
+                              </div>
+                            </div>
+                            <Tabs defaultValue="all" className="w-full sm:w-[400px]">
+                              <TabsList className="grid w-full grid-cols-4 bg-slate-900">
+                                <TabsTrigger
+                                  value="all"
+                                  onClick={() => setSelectedRiskFilter("all")}
+                                  className="data-[state=active]:bg-slate-800 data-[state=active]:text-cyan-500 text-xs"
+                                >
+                                  All ({eventCounts.total})
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="critical"
+                                  onClick={() => setSelectedRiskFilter("critical")}
+                                  className="data-[state=active]:bg-slate-800 data-[state=active]:text-red-500 text-xs"
+                                >
+                                  Critical ({eventCounts.critical})
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="high"
+                                  onClick={() => setSelectedRiskFilter("high")}
+                                  className="data-[state=active]:bg-slate-800 data-[state=active]:text-orange-500 text-xs"
+                                >
+                                  High ({eventCounts.high})
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="medium"
+                                  onClick={() => setSelectedRiskFilter("medium")}
+                                  className="data-[state=active]:bg-slate-800 data-[state=active]:text-amber-500 text-xs"
+                                >
+                                  Med ({eventCounts.medium})
+                                </TabsTrigger>
+                              </TabsList>
+                            </Tabs>
+                          </div>
+                          <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div className="relative flex-1">
+                              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                              <Input
+                                type="search"
+                                placeholder="Search events by ID, description, source..."
+                                className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                              />
+                            </div>
+                            <Select defaultValue="newest">
+                              <SelectTrigger className="w-full sm:w-[180px] bg-slate-900 border-slate-800">
+                                <SelectValue placeholder="Sort by" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-800">
+                                <SelectItem value="newest">Newest first</SelectItem>
+                                <SelectItem value="oldest">Oldest first</SelectItem>
+                                <SelectItem value="risk-high">Highest risk first</SelectItem>
+                                <SelectItem value="severity">Highest severity first</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <ScrollArea className="h-[400px] sm:h-[500px]">
+                            <div className="overflow-x-auto">
+                              <Table className="min-w-[800px]">
+                                <TableHeader className="bg-slate-900/50">
+                                  <TableRow className="hover:bg-slate-900/80 border-slate-800">
+                                    <TableHead className="w-[80px] text-xs">Event ID</TableHead>
+                                    <TableHead className="w-[120px] text-xs">Timestamp</TableHead>
+                                    <TableHead className="text-xs">Description</TableHead>
+                                    <TableHead className="text-xs">Type</TableHead>
+                                    <TableHead className="text-xs">Source</TableHead>
+                                    <TableHead className="text-xs">Wazuh Agent</TableHead>
+                                    <TableHead className="text-xs">Rule ID</TableHead>
+                                    <TableHead className="text-xs">Risk Level</TableHead>
+                                    <TableHead className="text-xs">Status</TableHead>
+                                    <TableHead className="text-right text-xs">Actions</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {filteredEvents.map((event) => (
+                                    <TableRow key={event.id} className="hover:bg-slate-900/80 border-slate-800">
+                                      <TableCell className="font-mono text-xs">{event.id}</TableCell>
+                                      <TableCell className="text-xs">
+                                        <div className="flex flex-col">
+                                          <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
+                                          <span className="text-slate-500">
+                                            {new Date(event.timestamp).toLocaleDateString()}
+                                          </span>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell className="text-xs max-w-[200px] truncate" title={event.description}>
+                                        {event.description}
+                                      </TableCell>
+                                      <TableCell className="text-xs">{event.type}</TableCell>
+                                      <TableCell className="font-mono text-xs">{event.source}</TableCell>
+                                      <TableCell className="text-xs">{event.wazuhAgent}</TableCell>
+                                      <TableCell className="font-mono text-xs">{event.ruleId}</TableCell>
+                                      <TableCell>
+                                        <RiskLevelBadge level={event.riskLevel} />
+                                      </TableCell>
+                                      <TableCell>
+                                        <StatusBadge status={event.status} />
+                                      </TableCell>
+                                      <TableCell className="text-right">
+                                        <DropdownMenu>
+                                          <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-8 sm:w-8">
+                                              <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
+                                              <span className="sr-only">Open menu</span>
+                                            </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent
+                                            align="end"
+                                            className="w-[160px] bg-slate-900 border-slate-800"
+                                          >
+                                            <DropdownMenuItem>View details</DropdownMenuItem>
+                                            <DropdownMenuItem>Investigate</DropdownMenuItem>
+                                            <DropdownMenuItem>Mark as resolved</DropdownMenuItem>
+                                            <DropdownMenuItem>Create ticket</DropdownMenuItem>
+                                          </DropdownMenuContent>
+                                        </DropdownMenu>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </ScrollArea>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
+
+                {activeSection === "vulnerabilities" && (
+                  <div className="space-y-4 sm:space-y-6 w-full">
+                    {/* Vulnerability Analysis */}
                     <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
                       <CardHeader className="pb-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div>
-                            <CardTitle className="text-sm sm:text-base text-slate-50">Security Events</CardTitle>
-                            <CardDescription className="text-slate-400 text-xs sm:text-sm">
-                              Real-time security events detected by Wazuh agents
-                            </CardDescription>
-                            <div className="mt-2 text-xs text-slate-400">
-                              <span className="font-medium text-cyan-500">{metrics.totalEvents}</span> events detected |
-                              <span className="font-medium text-red-500 ml-2">{metrics.activeThreats}</span> active
-                              threats
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Bug className="h-5 w-5 text-red-500" />
+                            <div>
+                              <CardTitle className="text-base text-slate-50">Vulnerability Analysis</CardTitle>
+                              <CardDescription className="text-slate-400 text-sm">
+                                CVE vulnerabilities detected by Wazuh agents
+                              </CardDescription>
                             </div>
                           </div>
-                          <Tabs defaultValue="all" className="w-full sm:w-[400px]">
-                            <TabsList className="grid w-full grid-cols-4 bg-slate-900">
-                              <TabsTrigger
-                                value="all"
-                                onClick={() => setSelectedRiskFilter("all")}
-                                className="data-[state=active]:bg-slate-800 data-[state=active]:text-cyan-500 text-xs"
-                              >
-                                All ({eventCounts.total})
-                              </TabsTrigger>
-                              <TabsTrigger
-                                value="critical"
-                                onClick={() => setSelectedRiskFilter("critical")}
-                                className="data-[state=active]:bg-slate-800 data-[state=active]:text-red-500 text-xs"
-                              >
-                                Critical ({eventCounts.critical})
-                              </TabsTrigger>
-                              <TabsTrigger
-                                value="high"
-                                onClick={() => setSelectedRiskFilter("high")}
-                                className="data-[state=active]:bg-slate-800 data-[state=active]:text-orange-500 text-xs"
-                              >
-                                High ({eventCounts.high})
-                              </TabsTrigger>
-                              <TabsTrigger
-                                value="medium"
-                                onClick={() => setSelectedRiskFilter("medium")}
-                                className="data-[state=active]:bg-slate-800 data-[state=active]:text-amber-500 text-xs"
-                              >
-                                Med ({eventCounts.medium})
-                              </TabsTrigger>
-                            </TabsList>
-                          </Tabs>
-                        </div>
-                        <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                          <div className="relative flex-1">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
-                            <Input
-                              type="search"
-                              placeholder="Search events by ID, description, source..."
-                              className="w-full bg-slate-900 border-slate-800 pl-9 focus-visible:ring-cyan-500 text-sm"
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                          </div>
-                          <Select defaultValue="newest">
-                            <SelectTrigger className="w-full sm:w-[180px] bg-slate-900 border-slate-800">
-                              <SelectValue placeholder="Sort by" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-slate-800">
-                              <SelectItem value="newest">Newest first</SelectItem>
-                              <SelectItem value="oldest">Oldest first</SelectItem>
-                              <SelectItem value="risk-high">Highest risk first</SelectItem>
-                              <SelectItem value="severity">Highest severity first</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Button onClick={refreshData} disabled={isLoading} className="bg-cyan-600 hover:bg-cyan-700">
+                            {isLoading ? (
+                              <Clock className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <Shield className="h-4 w-4 mr-2" />
+                            )}
+                            {isLoading ? "Scanning..." : "Scan Now"}
+                          </Button>
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <ScrollArea className="h-[400px] sm:h-[500px]">
-                          <div className="overflow-x-auto">
-                            <Table className="min-w-[800px]">
-                              <TableHeader className="bg-slate-900/50">
-                                <TableRow className="hover:bg-slate-900/80 border-slate-800">
-                                  <TableHead className="w-[80px] text-xs">Event ID</TableHead>
-                                  <TableHead className="w-[120px] text-xs">Timestamp</TableHead>
-                                  <TableHead className="text-xs">Description</TableHead>
-                                  <TableHead className="text-xs">Type</TableHead>
-                                  <TableHead className="text-xs">Source</TableHead>
-                                  <TableHead className="text-xs">Wazuh Agent</TableHead>
-                                  <TableHead className="text-xs">Rule ID</TableHead>
-                                  <TableHead className="text-xs">Risk Level</TableHead>
-                                  <TableHead className="text-xs">Status</TableHead>
-                                  <TableHead className="text-right text-xs">Actions</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {filteredEvents.map((event) => (
-                                  <TableRow key={event.id} className="hover:bg-slate-900/80 border-slate-800">
-                                    <TableCell className="font-mono text-xs">{event.id}</TableCell>
-                                    <TableCell className="text-xs">
-                                      <div className="flex flex-col">
-                                        <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
-                                        <span className="text-slate-500">
-                                          {new Date(event.timestamp).toLocaleDateString()}
+                      <CardContent className="space-y-4">
+                        {/* Vulnerability Statistics */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-red-500/10">
+                            <AlertTriangle className="h-6 w-6 text-red-500" />
+                            <div>
+                              <p className="text-xs text-red-300">Critical</p>
+                              <p className="text-lg font-bold text-red-500">{vulnCounts.critical}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-orange-500/10">
+                            <AlertTriangle className="h-6 w-6 text-orange-500" />
+                            <div>
+                              <p className="text-xs text-orange-300">High</p>
+                              <p className="text-lg font-bold text-orange-500">{vulnCounts.high}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-yellow-500/10">
+                            <Clock className="h-6 w-6 text-yellow-500" />
+                            <div>
+                              <p className="text-xs text-yellow-300">Medium</p>
+                              <p className="text-lg font-bold text-yellow-500">{vulnCounts.medium}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10">
+                            <Shield className="h-6 w-6 text-green-500" />
+                            <div>
+                              <p className="text-xs text-green-300">Low</p>
+                              <p className="text-lg font-bold text-green-500">{vulnCounts.low}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Vulnerability List */}
+                        <ScrollArea className="h-[400px]">
+                          <div className="space-y-3">
+                            {vulnerabilities.map((vuln) => (
+                              <div
+                                key={vuln.id}
+                                className="p-4 rounded-lg bg-slate-900/30 hover:bg-slate-900/50 transition-colors border border-slate-800"
+                              >
+                                <div className="flex items-start justify-between mb-3">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <RiskLevelBadge level={vuln.severity} />
+                                      <Badge variant="outline" className="text-slate-400 border-slate-600">
+                                        {vuln.cve}
+                                      </Badge>
+                                      <StatusBadge status={vuln.status} />
+                                    </div>
+                                    <h4 className="font-medium text-sm mb-1 text-slate-50">{vuln.title}</h4>
+                                    <p className="text-xs text-slate-300 mb-2">{vuln.description}</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                      <div>
+                                        <span className="text-slate-400">CVSS:</span>
+                                        <span className="ml-1 font-medium text-slate-200">{vuln.cvss}</span>
+                                      </div>
+                                      <div>
+                                        <span className="text-slate-400">Package:</span>
+                                        <span className="ml-1 font-medium text-slate-200">{vuln.affectedPackage}</span>
+                                      </div>
+                                      <div>
+                                        <span className="text-slate-400">Version:</span>
+                                        <span className="ml-1 font-medium text-slate-200">{vuln.version}</span>
+                                      </div>
+                                      <div>
+                                        <span className="text-slate-400">Agent:</span>
+                                        <span className="ml-1 font-medium text-slate-200">{vuln.wazuhAgent}</span>
+                                      </div>
+                                    </div>
+                                    {vuln.fixedVersion && (
+                                      <div className="mt-2 text-xs">
+                                        <span className="text-slate-500">Fixed in:</span>
+                                        <span className="ml-1 font-medium text-green-400">{vuln.fixedVersion}</span>
+                                      </div>
+                                    )}
+                                    {vuln.relatedEvents.length > 0 && (
+                                      <div className="mt-2 text-xs">
+                                        <span className="text-slate-500">Related events:</span>
+                                        <span className="ml-1 font-medium text-cyan-400">
+                                          {vuln.relatedEvents.join(", ")}
                                         </span>
                                       </div>
-                                    </TableCell>
-                                    <TableCell className="text-xs max-w-[200px] truncate" title={event.description}>
-                                      {event.description}
-                                    </TableCell>
-                                    <TableCell className="text-xs">{event.type}</TableCell>
-                                    <TableCell className="font-mono text-xs">{event.source}</TableCell>
-                                    <TableCell className="text-xs">{event.wazuhAgent}</TableCell>
-                                    <TableCell className="font-mono text-xs">{event.ruleId}</TableCell>
-                                    <TableCell>
-                                      <RiskLevelBadge level={event.riskLevel} />
-                                    </TableCell>
-                                    <TableCell>
-                                      <StatusBadge status={event.status} />
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                      <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                          <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-8 sm:w-8">
-                                            <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
-                                            <span className="sr-only">Open menu</span>
-                                          </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                          align="end"
-                                          className="w-[160px] bg-slate-900 border-slate-800"
-                                        >
-                                          <DropdownMenuItem>View details</DropdownMenuItem>
-                                          <DropdownMenuItem>Investigate</DropdownMenuItem>
-                                          <DropdownMenuItem>Mark as resolved</DropdownMenuItem>
-                                          <DropdownMenuItem>Create ticket</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                      </DropdownMenu>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-2 ml-4">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                                      <FileText className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-slate-500">
+                                  <span>Detected: {new Date(vuln.detectedAt).toLocaleString()}</span>
+                                  <span>Category: {vuln.category}</span>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </ScrollArea>
                       </CardContent>
                     </Card>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {activeSection === "vulnerabilities" && (
-                <div className="space-y-4 sm:space-y-6 w-full">
-                  {/* Vulnerability Analysis */}
-                  <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Bug className="h-5 w-5 text-red-500" />
-                          <div>
-                            <CardTitle className="text-base text-slate-50">Vulnerability Analysis</CardTitle>
-                            <CardDescription className="text-slate-400 text-sm">
-                              CVE vulnerabilities detected by Wazuh agents
-                            </CardDescription>
-                          </div>
-                        </div>
-                        <Button onClick={refreshData} disabled={isLoading} className="bg-cyan-600 hover:bg-cyan-700">
-                          {isLoading ? (
-                            <Clock className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Shield className="h-4 w-4 mr-2" />
-                          )}
-                          {isLoading ? "Scanning..." : "Scan Now"}
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Vulnerability Statistics */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-red-500/10">
-                          <AlertTriangle className="h-6 w-6 text-red-500" />
-                          <div>
-                            <p className="text-xs text-red-300">Critical</p>
-                            <p className="text-lg font-bold text-red-500">{vulnCounts.critical}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-orange-500/10">
-                          <AlertTriangle className="h-6 w-6 text-orange-500" />
-                          <div>
-                            <p className="text-xs text-orange-300">High</p>
-                            <p className="text-lg font-bold text-orange-500">{vulnCounts.high}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-yellow-500/10">
-                          <Clock className="h-6 w-6 text-yellow-500" />
-                          <div>
-                            <p className="text-xs text-yellow-300">Medium</p>
-                            <p className="text-lg font-bold text-yellow-500">{vulnCounts.medium}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10">
-                          <Shield className="h-6 w-6 text-green-500" />
-                          <div>
-                            <p className="text-xs text-green-300">Low</p>
-                            <p className="text-lg font-bold text-green-500">{vulnCounts.low}</p>
-                          </div>
-                        </div>
-                      </div>
+                {activeSection === "reports" && (
+                  <div className="space-y-4 sm:space-y-6 w-full">
+                    <ReportGenerator events={events} vulnerabilities={vulnerabilities} metrics={metrics} />
+                  </div>
+                )}
 
-                      {/* Vulnerability List */}
-                      <ScrollArea className="h-[400px]">
-                        <div className="space-y-3">
-                          {vulnerabilities.map((vuln) => (
-                            <div
-                              key={vuln.id}
-                              className="p-4 rounded-lg bg-slate-900/30 hover:bg-slate-900/50 transition-colors border border-slate-800"
-                            >
-                              <div className="flex items-start justify-between mb-3">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <RiskLevelBadge level={vuln.severity} />
-                                    <Badge variant="outline" className="text-slate-400 border-slate-600">
-                                      {vuln.cve}
-                                    </Badge>
-                                    <StatusBadge status={vuln.status} />
-                                  </div>
-                                  <h4 className="font-medium text-sm mb-1 text-slate-50">{vuln.title}</h4>
-                                  <p className="text-xs text-slate-300 mb-2">{vuln.description}</p>
-                                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                                    <div>
-                                      <span className="text-slate-400">CVSS:</span>
-                                      <span className="ml-1 font-medium text-slate-200">{vuln.cvss}</span>
-                                    </div>
-                                    <div>
-                                      <span className="text-slate-400">Package:</span>
-                                      <span className="ml-1 font-medium text-slate-200">{vuln.affectedPackage}</span>
-                                    </div>
-                                    <div>
-                                      <span className="text-slate-400">Version:</span>
-                                      <span className="ml-1 font-medium text-slate-200">{vuln.version}</span>
-                                    </div>
-                                    <div>
-                                      <span className="text-slate-400">Agent:</span>
-                                      <span className="ml-1 font-medium text-slate-200">{vuln.wazuhAgent}</span>
-                                    </div>
-                                  </div>
-                                  {vuln.fixedVersion && (
-                                    <div className="mt-2 text-xs">
-                                      <span className="text-slate-500">Fixed in:</span>
-                                      <span className="ml-1 font-medium text-green-400">{vuln.fixedVersion}</span>
-                                    </div>
-                                  )}
-                                  {vuln.relatedEvents.length > 0 && (
-                                    <div className="mt-2 text-xs">
-                                      <span className="text-slate-500">Related events:</span>
-                                      <span className="ml-1 font-medium text-cyan-400">
-                                        {vuln.relatedEvents.join(", ")}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-2 ml-4">
-                                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                                    <FileText className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between text-xs text-slate-500">
-                                <span>Detected: {new Date(vuln.detectedAt).toLocaleString()}</span>
-                                <span>Category: {vuln.category}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
-
-              {activeSection === "reports" && (
-                <div className="space-y-4 sm:space-y-6 w-full">
-                  <ReportGenerator events={events} vulnerabilities={vulnerabilities} metrics={metrics} />
-                </div>
-              )}
-
-              {activeSection === "settings" && (
-                <div className="space-y-4 sm:space-y-6 w-full">
-                  <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-                    <CardHeader>
-                      <CardTitle className="text-slate-50">Settings</CardTitle>
-                      <CardDescription className="text-slate-400">System configuration and preferences</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-slate-300">Settings panel coming soon...</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
-            </div>
-          </main>
+                {activeSection === "settings" && (
+                  <div className="space-y-4 sm:space-y-6 w-full">
+                    <Card className="border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+                      <CardHeader>
+                        <CardTitle className="text-slate-50">Settings</CardTitle>
+                        <CardDescription className="text-slate-400">System configuration and preferences</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-slate-300">Settings panel coming soon...</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     </SidebarProvider>

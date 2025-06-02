@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Download, FileText, Loader2 } from "lucide-react"
 import type { ReportConfig, SecurityEvent, Vulnerability, SystemMetrics } from "@/types/dashboard"
+import jsPDF from "jspdf"
 
 interface ReportGeneratorProps {
   events: SecurityEvent[]
@@ -135,15 +136,129 @@ export default function ReportGenerator({ events, vulnerabilities, metrics }: Re
   }
 
   const downloadReport = (reportData: any) => {
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `vynix-security-report-${reportConfig.startDate}-to-${reportConfig.endDate}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    if (reportConfig.format === "pdf") {
+      const pdf = new jsPDF()
+      pdf.setFontSize(18)
+      pdf.text("Vynix Security Report", 20, 20)
+
+      pdf.setFontSize(12)
+      pdf.text(`Report Period: ${reportData.summary.reportPeriod}`, 20, 30)
+      pdf.text(`Generated At: ${new Date(reportData.generatedAt).toLocaleString()}`, 20, 38)
+
+      pdf.setFontSize(14)
+      pdf.text("Summary", 20, 50)
+      pdf.setFontSize(10)
+      let yPos = 58
+      pdf.text(`Total Security Events: ${reportData.summary.totalEvents}`, 25, yPos)
+      pdf.text(`Critical Events: ${reportData.summary.criticalEvents}`, 25, (yPos += 6))
+      pdf.text(`High Risk Events: ${reportData.summary.highEvents}`, 25, (yPos += 6))
+      pdf.text(`Total Vulnerabilities: ${reportData.summary.totalVulnerabilities}`, 25, (yPos += 6))
+      pdf.text(`Critical Vulnerabilities: ${reportData.summary.criticalVulnerabilities}`, 25, (yPos += 6))
+      pdf.text(`Open Vulnerabilities: ${reportData.summary.openVulnerabilities}`, 25, (yPos += 6))
+      pdf.text(`Security Score: ${reportData.summary.securityScore}%`, 25, (yPos += 6))
+
+      yPos += 10
+      pdf.setFontSize(14)
+      pdf.text("Top Threats", 20, yPos)
+      pdf.setFontSize(10)
+      yPos += 8
+      if (reportData.summary.topThreats && reportData.summary.topThreats.length > 0) {
+        reportData.summary.topThreats.forEach((threat: { type: string; count: number }) => {
+          pdf.text(`- ${threat.type}: ${threat.count}`, 25, yPos)
+          yPos += 6
+          if (yPos > 280) {
+            pdf.addPage()
+            yPos = 20
+          }
+        })
+      } else {
+        pdf.text("- No significant threats identified in this period.", 25, yPos)
+        yPos += 6
+      }
+
+      yPos += 4
+      pdf.setFontSize(14)
+      pdf.text("Recommendations", 20, yPos)
+      pdf.setFontSize(10)
+      yPos += 8
+      if (reportData.summary.recommendations && reportData.summary.recommendations.length > 0) {
+        reportData.summary.recommendations.forEach((rec: string) => {
+          const splitRec = pdf.splitTextToSize(rec, 170) // 170 is approx width in mm for A4
+          pdf.text(splitRec, 25, yPos)
+          yPos += splitRec.length * 5 // Adjust spacing based on number of lines
+          if (yPos > 280) {
+            pdf.addPage()
+            yPos = 20
+          }
+        })
+      } else {
+        pdf.text("- No specific recommendations at this time.", 25, yPos)
+        yPos += 6
+      }
+
+      if (reportConfig.includeVulnerabilities && reportData.vulnerabilities.length > 0) {
+        if (yPos > 260) {
+          pdf.addPage()
+          yPos = 20
+        }
+        pdf.setFontSize(14)
+        pdf.text("Vulnerability Details", 20, yPos)
+        yPos += 8
+        pdf.setFontSize(9)
+        reportData.vulnerabilities.forEach((vuln: Vulnerability, index: number) => {
+          if (yPos > 270) {
+            pdf.addPage()
+            yPos = 20
+            pdf.setFontSize(14)
+            pdf.text("Vulnerability Details (Continued)", 20, yPos)
+            yPos += 8
+            pdf.setFontSize(9)
+          }
+          pdf.text(`ID: ${vuln.id} | Severity: ${vuln.severity} | Status: ${vuln.status}`, 25, yPos)
+          yPos += 5
+          pdf.text(`Description: ${vuln.description}`, 25, yPos)
+          yPos += 5
+          pdf.text(`Detected: ${new Date(vuln.detectedAt).toLocaleDateString()} | CVE: ${vuln.cve || "N/A"}`, 25, yPos)
+          yPos += 7
+        })
+      }
+
+      pdf.save(`vynix-security-report-${reportConfig.startDate}-to-${reportConfig.endDate}.pdf`)
+    } else if (reportConfig.format === "json") {
+      const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `vynix-security-report-${reportConfig.startDate}-to-${reportConfig.endDate}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } else if (reportConfig.format === "csv") {
+      // Basic CSV generation for events as an example
+      let csvContent = "data:text/csv;charset=utf-8,"
+      csvContent += "EventID,Timestamp,Type,RiskLevel,SourceIP,DestinationIP,Description\\r\\n" // Header
+      reportData.events.forEach((event: SecurityEvent) => {
+        const row = [
+          event.id,
+          event.timestamp,
+          event.type,
+          event.riskLevel,
+          event.sourceIp,
+          event.destinationIp,
+          `"${event.description.replace(/"/g, '""')}"`, // Escape double quotes
+        ].join(",")
+        csvContent += row + "\\r\\n"
+      })
+
+      const encodedUri = encodeURI(csvContent)
+      const link = document.createElement("a")
+      link.setAttribute("href", encodedUri)
+      link.setAttribute("download", `vynix-events-report-${reportConfig.startDate}-to-${reportConfig.endDate}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   }
 
   const getFilteredCounts = () => {
