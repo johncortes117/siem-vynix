@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'Centinela',
   description: 'SIEM',
   generator: '...',
+  icons: {
+    icon: '/logo-centinela.png', // Added favicon
+  },
 }
 
 export default function RootLayout({
