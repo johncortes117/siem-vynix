@@ -1,30 +1,56 @@
-# SIEM interface design
+# Centinela - Proyecto SIEM
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+## Descripción General
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/johnsteven28s-projects/v0-siem-interface-design)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/AQMEgAa2YHi)
+Centinela es un proyecto de Sistema de Información y Gestión de Eventos de Seguridad (SIEM) diseñado para proporcionar una visión centralizada de la postura de seguridad de una organización. Recopila, analiza y correlaciona datos de eventos de diversas fuentes para identificar amenazas potenciales, actividades anómalas y vulnerabilidades de seguridad.
 
-## Overview
+## Características Principales (Ejemplo)
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+*   **Recopilación de Logs Centralizada:** Agrega logs de múltiples fuentes (servidores, firewalls, aplicaciones, etc.).
+*   **Correlación de Eventos en Tiempo Real:** Identifica patrones y relaciones entre eventos para detectar incidentes de seguridad.
+*   **Visualización de Datos:** Paneles e informes intuitivos para monitorizar la actividad de seguridad.
+*   **Gestión de Alertas:** Notificaciones configurables para eventos críticos.
+*   **Análisis de Vulnerabilidades:** (Si aplica) Integración con herramientas de escaneo de vulnerabilidades.
+*   **Generación de Informes:** Informes personalizables sobre el estado de la seguridad y cumplimiento.
 
-## Deployment
+## Tecnologías Utilizadas (Ejemplo)
 
-Your project is live at:
+*   **Frontend:** Next.js, TypeScript, Tailwind CSS, Shadcn/ui
+*   **Backend:** (Especificar si aplica, ej: Node.js, Python, Wazuh API)
+*   **Bases de Datos:** (Especificar si aplica)
 
-**[https://vercel.com/johnsteven28s-projects/v0-siem-interface-design](https://vercel.com/johnsteven28s-projects/v0-siem-interface-design)**
+## Primeros Pasos
 
-## Build your app
+### Prerrequisitos
 
-Continue building your app on:
+*   Node.js (versión X.X.X o superior)
+*   pnpm (o npm/yarn)
+*   (Cualquier otro software o servicio necesario, ej: Wazuh Manager)
 
-**[https://v0.dev/chat/projects/AQMEgAa2YHi](https://v0.dev/chat/projects/AQMEgAa2YHi)**
+### Instalación
 
-## How It Works
+1.  Clona el repositorio:
+    ```bash
+    git clone https://URL_DEL_REPOSITORIO_AQUI
+    ```
+2.  Navega al directorio del proyecto:
+    ```bash
+    cd siem-vynix
+    ```
+3.  Instala las dependencias:
+    ```bash
+    pnpm install
+    ```
+## Uso
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Para iniciar el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
+
+---
+
+PROYECTO DE SEGURIDAD INFORMATICA - CARRERA DE COMPUTACIÓN - UPEC
